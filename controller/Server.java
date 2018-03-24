@@ -69,9 +69,9 @@ public class Server extends Thread {
             fis.close();
 
         } catch (FileNotFoundException e) {
-            Model.sendServerException(404,"Not Found");
+            //Model.sendServerException(404,"Not Found");
         } catch (Exception e) {
-            Model.sendServerException(500,"Internal Server Error");
+            //Model.sendServerException(500,"Internal Server Error");
         }
             
     }
@@ -93,7 +93,7 @@ public class Server extends Thread {
             fos.close();            
             	
         } catch (IOException e) {
-            Model.sendServerException(500,"Internal Server Error");
+            //Model.sendServerException(500,"Internal Server Error");
         }
         return f;
     }
