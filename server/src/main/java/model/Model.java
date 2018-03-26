@@ -1,5 +1,5 @@
 package model;
-import java.io.File;
+import java.io.*;
 
 /** class Model make the main work between client-controller conversatio */
 public class Model {
@@ -54,12 +54,21 @@ public class Model {
     }
 
     /** Check the client "action" from client and do that on controller side
-     @param recFile is the file from the client
+     @param s is the string from the client
      @return sendFile is the file to send to the client */
-    public static File doWork(File recFile) throws Exception {
+    public static String doWork(String s) throws Exception {
 
-        File sendFile;
-        char status = XMLParse.getCommandType(recFile).charAt(0);
+        String sendFile;
+        char status = Model.getCommandType(s).charAt(0);
+
+        File recFile = new File("ask.xml");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter( recFile))){
+            bw.write(s);
+        } catch (FileNotFoundException e) {
+            //log.error("TaskIO.writeText() failed", e);
+        } catch (IOException e) {
+            //log.error("TaskIO.writeText() failed", e);
+        }
         Client client = XMLParse.getClient(recFile);
 
         System.out.println(status);
@@ -154,11 +163,19 @@ public class Model {
         return sendFile;
     }
 
+    /** Ummarshaling the ask file from client and give the action for controller work
+     @param s is the ask from client
+     @return action type for controller work */
+    public static String getCommandType(String s) throws Exception
+    {
+        return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
+    }
+
    /** Check if the client want to finish the session
     @param recFile is the file from the client
     @return b is "true" if ok */
-    public static boolean activeClient(File recFile) throws Exception {
-        char status = XMLParse.getCommandType(recFile).charAt(0);
+    public static boolean activeClient(String recFile) throws Exception {
+        char status = Model.getCommandType(recFile).charAt(0);
 
         switch (status) {
             case 'c': // "close"

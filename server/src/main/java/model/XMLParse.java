@@ -3,7 +3,7 @@ package model;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -478,16 +478,7 @@ public class XMLParse {
         jaxbMarshaller.marshal(socket,file);
     }
 
-   /** Ummarshaling the ask file from client and give the action for controller work
-    @param file is the ask file from client
-    @return action type for controller work */
-    public static String getCommandType(File file) throws Exception
-    {
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-        XMLParse.Socket socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);        
-        return socket.getAction();
-    }
+
 
     /** Ummarshaling the ask file from client and give the information about client
      @param file is the ask file from client
@@ -569,7 +560,7 @@ public class XMLParse {
     /** Marshaling the answer file for "view" action from client
      @param client is the information about the client
      @return file is the answer file for "view" action from client */
-    public static File sendTasks(Client client) throws Exception
+    public static String sendTasks(Client client) throws Exception
     {
         String filename = "xml/" + "answerView" + client.getLogin() + ".xml";
         File file = new File(filename);
@@ -584,13 +575,24 @@ public class XMLParse {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.marshal(socket,file);
 
-        return file;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String text = "";
+        String alltext = "";
+        while(!(text = br.readLine()).equals("</socket>")) {
+            alltext += text;
+        }
+        alltext += br.readLine();
+
+        file.deleteOnExit();
+
+        return alltext;
     }
 
     /** Marshaling the answer file for "autorization" action from client
      @param client is the information about the client
      @return file is the answer file for "autorization" action from client */
-    public static File sendId(Client client) throws Exception
+    public static String sendId(Client client) throws Exception
     {
         String filename = "xml/" + "answerId" + client.getLogin() + ".xml";
         File file = new File(filename);
@@ -602,7 +604,18 @@ public class XMLParse {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.marshal(socket,file);
 
-        return file;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String text = "";
+        String alltext = "";
+        while(!(text = br.readLine()).equals("</socket>")) {
+            alltext += text;
+        }
+        alltext += br.readLine();
+
+        file.deleteOnExit();
+
+        return alltext;
     }
 
     /** Marshaling the answer file for status after some action from client
@@ -610,7 +623,7 @@ public class XMLParse {
      @param code is the answer code to the client
      @param status is the answer to client
      @return file is the answer file for status after some action from client */
-    public static File sendStatus(Client client, int code, String status) throws Exception
+    public static String sendStatus(Client client, int code, String status) throws Exception
     {
         String filename = "xml/" + "answerStatus2" + client.getLogin() + ".xml";
         File file = new File(filename);
@@ -623,13 +636,24 @@ public class XMLParse {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.marshal(socket,file);
 
-        return file;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String text = "";
+        String alltext = "";
+        while(!(text = br.readLine()).equals("</socket>")) {
+            alltext += text;
+        }
+        alltext += br.readLine();
+
+        file.deleteOnExit();
+
+        return alltext;
     }
 
     /** Marshaling the answer file for "notification" action from client
      @param client is the information about the client
      @return file is the answer file for "notification" action from client */
-    public static File sendTasksByTime(Client client) throws Exception
+    public static String sendTasksByTime(Client client) throws Exception
     {
         String filename = "xml/" + "answerNotification" + client.getLogin() + ".xml";
         File file = new File(filename);
@@ -656,7 +680,18 @@ public class XMLParse {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.marshal(socket,file);
 
-        return file;
+        BufferedReader br = new BufferedReader(new FileReader(file));
+
+        String text = "";
+        String alltext = "";
+        while(!(text = br.readLine()).equals("</socket>")) {
+            alltext += text;
+        }
+        alltext += br.readLine();
+
+        file.deleteOnExit();
+
+        return alltext;
     }
 }
 

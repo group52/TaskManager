@@ -27,15 +27,16 @@ public class Server extends Thread {
     {
         try
         {
-            InputStream is = socket.getInputStream();
-            OutputStream os = socket.getOutputStream();
-            File recFile;
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter out = new BufferedWriter(new PrintWriter(socket.getOutputStream(), true));
+
             boolean activeClient = true;
+            String ask;
 
             while (activeClient) {
-                recFile = Server.recieveFile(is);
-                Server.sendFile(os, Model.doWork(recFile));
-                activeClient = Model.activeClient(recFile);                
+                ask = Server.recieveFile(in);
+                Server.sendFile(out, Model.doWork(ask));
+                activeClient = Model.activeClient(ask);
             }            
         }
         catch(Exception e)
@@ -50,41 +51,18 @@ public class Server extends Thread {
     }
 
     /** Send the @param file using some @param OutputStream
-    @param f is the file for send 
-    @param os is the OutputStream for sending to the client */
-    public static void sendFile(OutputStream output, File file) throws IOException {
+    @param s is the string for send
+    @param output is the OutputStream for sending to the client */
+    public static void sendFile(BufferedWriter output, String s) throws IOException {
 
-        byte[] byteArray = new byte[(int) file.length()];
-
-        FileInputStream fis = new FileInputStream(file);
-        BufferedInputStream bis = new BufferedInputStream(fis);
-
-        DataInputStream dis = new DataInputStream(bis);
-        dis.readFully(byteArray, 0, byteArray.length);
-        
-        //Sending file data to the socket
-        output.write(byteArray, 0, byteArray.length);
-        output.flush();
-        bis.close();
+       output.write(s);
     }
     
     /** Receive the @return file using some @param InputStream  
-    @param is is the InputStream for receive 
-    @return f is the file from the client */
-    private static File recieveFile(InputStream is) throws Exception {
-        File f = new File("xml/" + is.hashCode() + ".xml" );
-        OutputStream output = new FileOutputStream(f);
-        
-        try (BufferedReader input = new BufferedReader(new InputStreamReader(is))) {            
-
-            String text;            
-            while(!(text = input.readLine()).equals("</socket>")) {                
-                output.write(text.getBytes());                
-            }  
-            output.write(text.getBytes());
-            output.close();   
-        } 
-        return f;
+    @param input is the input for receive
+    @return the String from the client */
+    private static String recieveFile(BufferedReader input) throws Exception {
+        return input.readLine();
     }
 
 }
