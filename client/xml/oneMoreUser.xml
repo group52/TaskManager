@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE socket SYSTEM  "xml\client.dtd">
+<socket>
+    <client login="asd" password="a">
+        <id>0</id>
+    </client>
+    <action>oneMoreUser</action>
+    <code>0</code>
+</socket>

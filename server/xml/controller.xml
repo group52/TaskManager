@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<controller>
+    <client login="6" password="54">
+        <session_id>1641756551</session_id>
+    </client>
+    <client login="8" password="56">
+        <session_id>1645972463</session_id>
+    </client>
+    <client login="9" password="57">
+        <session_id>1646352624</session_id>
+    </client>
+    <client login="0" password="48">
+        <session_id>1647792775</session_id>
+    </client>
+    <client login="1" password="49">
+        <session_id>1649673817</session_id>
+    </client>
+    <client login="3" password="51">
+        <session_id>1650441840</session_id>
+    </client>
+    <client login="11" password="49">
+        <session_id>1652582634</session_id>
+    </client>
+    <client login="12" password="49">
+        <session_id>1652834775</session_id>
+    </client>
+    <client login="13" password="49">
+        <session_id>1653417176</session_id>
+    </client>
+    <client login="111" password="49">
+        <session_id>1654394574</session_id>
+    </client>
+</controller>

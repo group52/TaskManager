@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<socket>
+    <client login="" password="">
+        <session_id>0</session_id>
+    </client>
+    <action></action>
+    <code>500</code>
+    <status>Internal controller.Server Error</status>
+</socket>
