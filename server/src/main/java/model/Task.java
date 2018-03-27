@@ -2,12 +2,12 @@ package model;
 
 import java.util.Date;
 import java.io.Serializable;
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
 /** class Task for planning the day */
 public class Task implements Cloneable, Serializable {
 
-    //private static final Logger log = Logger.getLogger(Task.class);
+    private static final Logger log = Logger.getLogger(Task.class);
 
     private String title;
     private Date time;
@@ -103,9 +103,6 @@ public class Task implements Cloneable, Serializable {
     /** Return the title of the task
     @return the title of the task */
     public String getTitle() {
-        if (this.title == null)
-            throw new NullPointerException("Task can't be null");
-
         return this.title;
     }
 
@@ -131,10 +128,7 @@ public class Task implements Cloneable, Serializable {
     @return the start time of the repeated task
     or time of the non repeated task */
     public long getTime() {
-        if (this.time == null)
-            throw new NullPointerException("Task can't be null");
-
-        return this.time.getTime();
+         return this.time.getTime();
     }
     
     /** Setup the time of the non repeated task
@@ -163,8 +157,6 @@ public class Task implements Cloneable, Serializable {
     @return the start time of the repeated task
     or time of the non repeated task */
     public long getStartTime() {
-        if (this.start == null)
-            throw new NullPointerException("Task can't be null");
 
         return this.start.getTime();
     }
@@ -173,10 +165,7 @@ public class Task implements Cloneable, Serializable {
     @return the start time of the repeated task
     or time of the non repeated task */
     public Date getStartDate() {
-        if (this.start == null)
-            throw new NullPointerException("Task can't be null");
-
-        return this.start;
+         return this.start;
     }
 
     /** Return the end time of the repeated task
@@ -184,10 +173,7 @@ public class Task implements Cloneable, Serializable {
     @return the end time of the repeated task
     or time of the non repeated task */
     public long getEndTime() {
-        if (this.end == null)
-            throw new NullPointerException("Task can't be null");
-
-            return this.end.getTime();
+        return this.end.getTime();
     }
     
     /** Return the end time of the repeated task
@@ -195,8 +181,6 @@ public class Task implements Cloneable, Serializable {
     @return the end time of the repeated task
     or time of the non repeated task */
     public Date getEndDate() {
-        if (this.end == null)
-            throw new NullPointerException("Task can't be null");
 
         return this.end;
     }
@@ -303,10 +287,7 @@ public class Task implements Cloneable, Serializable {
     public int nextTimeAfter(int current) {
 
         long answer;
-        
-        if (this.time == null)
-            throw new NullPointerException("Task can't be null");
-            
+
         if (!(this.isActive()))
             answer = -1;
         else {

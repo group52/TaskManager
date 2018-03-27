@@ -1,6 +1,10 @@
 package model;
+
+import org.apache.log4j.Logger;
 /** class Client give information about user for the controller */
 public class Client {
+
+    private Logger log = Logger.getLogger(Client.class);
 
     private String login;
     private int password;

@@ -1,6 +1,7 @@
 package model;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
@@ -14,40 +15,58 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.log4j.Logger;
 
 /** class XMLParse for parsing, marshaling and unmarshaling the *.xml files from the client to the controller */
 public class XMLParse {
 
-    /** subclass Server for saving information in xml-format on the controller side */
-    @XmlRootElement (name = "controller")
+    private Logger log = Logger.getLogger(XMLParse.class);
+
+    public XMLParse() {
+    }
+
+    /**
+     * subclass Server for saving information in xml-format on the controller side
+     */
+    @XmlRootElement(name = "controller")
     @XmlAccessorType(XmlAccessType.FIELD)
-    static class Server {
-        
+    class Server {
+
         @XmlElement(name = "client")
         private ArrayList<XMLParse.ServerClient> clients;
 
-        /** Empty constructor without clients on the controller */
-        public Server(){
+        /**
+         * Empty constructor without clients on the controller
+         */
+        public Server() {
             clients = new ArrayList<XMLParse.ServerClient>();
         }
 
-        /** Add client to the controller
-         @param client is the client for adding */
-        public void add(XMLParse.ServerClient client){
+        /**
+         * Add client to the controller
+         *
+         * @param client is the client for adding
+         */
+        public void add(XMLParse.ServerClient client) {
             clients.add(client);
         }
 
-        /** Add client to the controller
-         @return clients is the list of the clients */
+        /**
+         * Add client to the controller
+         *
+         * @return clients is the list of the clients
+         */
         public List<XMLParse.ServerClient> getClients() {
             return clients;
         }
     }
 
-    /** Subclass ServerClien give information about user for the controller */
+    /**
+     * Subclass ServerClien give information about user for the controller
+     */
     @XmlRootElement(name = "client")
     @XmlAccessorType(XmlAccessType.FIELD)
-    static class ServerClient {
+    class ServerClient {
         // поля
         @XmlAttribute(name = "login")
         String login;
@@ -56,50 +75,73 @@ public class XMLParse {
         @XmlElement(name = "session_id")
         int id;
 
-        /** Return the login of the client
-         @return login is the login of the client */
+        /**
+         * Return the login of the client
+         *
+         * @return login is the login of the client
+         */
         public String getLogin() {
             return login;
         }
 
-        /** Setup the login for the client
-         @param login is the password for the client */
+        /**
+         * Setup the login for the client
+         *
+         * @param login is the password for the client
+         */
         public void setLogin(String login) {
             this.login = login;
         }
 
-        /** Return the password of the client
-         @return password is the password of the client */
+        /**
+         * Return the password of the client
+         *
+         * @return password is the password of the client
+         */
         public String getPassword() {
             return password;
         }
 
-        /** Setup the password for the client
-         @param password is the password for the client */
+        /**
+         * Setup the password for the client
+         *
+         * @param password is the password for the client
+         */
         public void setPassword(String password) {
             this.password = password;
         }
 
-        /** Return the session id of the client, which is new for each autorization
-         @return id is the session id of the client */
+        /**
+         * Return the session id of the client, which is new for each autorization
+         *
+         * @return id is the session id of the client
+         */
         public int getId() {
             return id;
         }
 
-        /** Setup the session id for the client
-         @param id is the session id for the client */
+        /**
+         * Setup the session id for the client
+         *
+         * @param id is the session id for the client
+         */
         public void setId(int id) {
             this.id = id;
         }
 
-        /** Empty constructor for the client */
+        /**
+         * Empty constructor for the client
+         */
         public ServerClient() {
         }
 
-        /** Constructor for the client
-         @param login is the login of the client
-         @param password is the password of the client
-         @param id is the session id of the client */
+        /**
+         * Constructor for the client
+         *
+         * @param login    is the login of the client
+         * @param password is the password of the client
+         * @param id       is the session id of the client
+         */
         public ServerClient(String login, String password, int id) {
             setLogin(login);
             setPassword(password);
@@ -108,11 +150,13 @@ public class XMLParse {
 
     }
 
-    /** subclass Socket for sending and receiving information in xml-format between the controller and client */
-    @XmlRootElement (name = "socket")
+    /**
+     * subclass Socket for sending and receiving information in xml-format between the controller and client
+     */
+    @XmlRootElement(name = "socket")
     @XmlAccessorType(XmlAccessType.FIELD)
-    static class Socket {
-    
+    class Socket {
+
         @XmlElement(name = "client")
         XMLParse.ServerClient serverClient;
 
@@ -124,72 +168,104 @@ public class XMLParse {
 
         @XmlElement(name = "status")
         String status;
-        
+
         @XmlElement(name = "task")
         private ArrayList<XMLParse.TaskClient> tasks;
 
-        /** Return the tasks of the client
-         @return tasks is the tasks of the client */
+        /**
+         * Return the tasks of the client
+         *
+         * @return tasks is the tasks of the client
+         */
         public List<XMLParse.TaskClient> getTasks() {
             return tasks;
         }
 
-        /** Setup the tasks to the task list
-         @param tasks is the tasks of the task list */
+        /**
+         * Setup the tasks to the task list
+         *
+         * @param tasks is the tasks of the task list
+         */
         public void setTasks(ArrayList<XMLParse.TaskClient> tasks) {
             this.tasks = tasks;
         }
 
-        /** Return the client information
-         @return serverClient is the client information */
+        /**
+         * Return the client information
+         *
+         * @return serverClient is the client information
+         */
         public ServerClient getServerClient() {
             return serverClient;
         }
 
-        /** Setup the client information
-         @param serverClient is the client information */
+        /**
+         * Setup the client information
+         *
+         * @param serverClient is the client information
+         */
         public void setServerClient(ServerClient serverClient) {
             this.serverClient = serverClient;
         }
 
-        /** Return the action which the client want to do with the tasks list
-         @return action is the action which the client want to do */
+        /**
+         * Return the action which the client want to do with the tasks list
+         *
+         * @return action is the action which the client want to do
+         */
         public String getAction() {
             return action;
         }
 
-        /** Setup the action of the controller work
-         @param action is the action of the controller work */
+        /**
+         * Setup the action of the controller work
+         *
+         * @param action is the action of the controller work
+         */
         public void setAction(String action) {
             this.action = action;
         }
 
-        /** Return the code of the problem with client information from controller side
-         @return code is the problem with client information */
+        /**
+         * Return the code of the problem with client information from controller side
+         *
+         * @return code is the problem with client information
+         */
         public int getCode() {
             return code;
         }
 
-        /** Setup the code of the problem with client information from controller side
-         @param code is the code of the problem with client information */
+        /**
+         * Setup the code of the problem with client information from controller side
+         *
+         * @param code is the code of the problem with client information
+         */
         public void setCode(int code) {
             this.code = code;
         }
 
-        /** Return the status of controller answer ("true" or "false")
-         @return status is the status of controller answer */
+        /**
+         * Return the status of controller answer ("true" or "false")
+         *
+         * @return status is the status of controller answer
+         */
         public String getStatus() {
             return status;
         }
 
-        /** Setup the status of controller answer ("true" or "false")
-         @param status is the status of controller answer */
+        /**
+         * Setup the status of controller answer ("true" or "false")
+         *
+         * @param status is the status of controller answer
+         */
         public void setStatus(String status) {
             this.status = status;
         }
 
-        /** Empty constructor for the socket */
-        public Socket(){
+        /**
+         * Empty constructor for the socket
+         */
+        public Socket() {
             serverClient = new ServerClient();
             action = "";
             code = 0;
@@ -197,12 +273,15 @@ public class XMLParse {
             tasks = new ArrayList<XMLParse.TaskClient>();
         }
 
-        /** Constructor for the one .xml file for send
-         @param serverClient is the client information
-         @param action is the action of the controller work
-         @param code is the code of the problem with client information
-         @param status is the status of controller answer */
-        public Socket(XMLParse.ServerClient serverClient, String action, int code, String status){
+        /**
+         * Constructor for the one .xml file for send
+         *
+         * @param serverClient is the client information
+         * @param action       is the action of the controller work
+         * @param code         is the code of the problem with client information
+         * @param status       is the status of controller answer
+         */
+        public Socket(XMLParse.ServerClient serverClient, String action, int code, String status) {
             setServerClient(serverClient);
             setAction(action);
             setCode(code);
@@ -210,17 +289,22 @@ public class XMLParse {
             tasks = new ArrayList<XMLParse.TaskClient>();
         }
 
-        /** Add task to the client task list
-         @param task is the new task for addding */
-        public void addTask(XMLParse.TaskClient task){
+        /**
+         * Add task to the client task list
+         *
+         * @param task is the new task for addding
+         */
+        public void addTask(XMLParse.TaskClient task) {
             tasks.add(task);
         }
     }
 
-    /** subclass TaskClient is the task of the client */
-    @XmlRootElement (name = "task")
+    /**
+     * subclass TaskClient is the task of the client
+     */
+    @XmlRootElement(name = "task")
     @XmlAccessorType(XmlAccessType.FIELD)
-    static class TaskClient {
+    class TaskClient {
         @XmlAttribute(name = "title")
         String title;
 
@@ -238,111 +322,158 @@ public class XMLParse {
 
         @XmlAttribute(name = "active")
         boolean active;
-        
+
         @XmlAttribute(name = "description")
         String description;
 
-        /** Return the description of the task
-         @return the description of the task */
+        /**
+         * Return the description of the task
+         *
+         * @return the description of the task
+         */
         public String getDescription() {
             return description;
         }
 
-        /** Setup the description of the task
-         @param description is the description of the task */
+        /**
+         * Setup the description of the task
+         *
+         * @param description is the description of the task
+         */
         public void setDescription(String description) {
             this.description = description;
         }
 
-        /** Return the title of the task
-         @return the title of the task */
+        /**
+         * Return the title of the task
+         *
+         * @return the title of the task
+         */
         public String getTitle() {
             return title;
         }
 
-        /** Setup the title of the task
-         @param title is the title of the task */
+        /**
+         * Setup the title of the task
+         *
+         * @param title is the title of the task
+         */
         public void setTitle(String title) {
             this.title = title;
         }
 
-        /** Return the start time of the task
-         @return the start time of the repeated task
-         or time of the non repeated task */
+        /**
+         * Return the start time of the task
+         *
+         * @return the start time of the repeated task
+         * or time of the non repeated task
+         */
         public long getTime() {
             return time;
         }
 
-        /** Setup the time of the non repeated task
-         and make non repeated task for repeated task
-         @param time is the time of the non repeated task */
+        /**
+         * Setup the time of the non repeated task
+         * and make non repeated task for repeated task
+         *
+         * @param time is the time of the non repeated task
+         */
         public void setTime(long time) {
             this.time = time;
         }
 
-        /** Return the same as method getTime()
-         @return the start time of the repeated task
-         or time of the non repeated task */
+        /**
+         * Return the same as method getTime()
+         *
+         * @return the start time of the repeated task
+         * or time of the non repeated task
+         */
         public long getStart() {
             return start;
         }
 
-        /** Setup the start of the task
-         @param start is the start time of the task */
+        /**
+         * Setup the start of the task
+         *
+         * @param start is the start time of the task
+         */
         public void setStart(long start) {
             this.start = start;
         }
 
-        /** Return the end time of the repeated task
-         or time of the non repeated task
-         @return the end time of the repeated task
-         or time of the non repeated task */
+        /**
+         * Return the end time of the repeated task
+         * or time of the non repeated task
+         *
+         * @return the end time of the repeated task
+         * or time of the non repeated task
+         */
         public long getEnd() {
             return end;
         }
 
-        /** Setup the end of the repeated task
-         @param end is the end of repeated period */
+        /**
+         * Setup the end of the repeated task
+         *
+         * @param end is the end of repeated period
+         */
         public void setEnd(long end) {
             this.end = end;
         }
 
-        /** Return the time between two same repeated tasks
-         or 0 for the non repeated task
-         @return the time between two same repeated tasks
-         or 0 for the non repeated task */
+        /**
+         * Return the time between two same repeated tasks
+         * or 0 for the non repeated task
+         *
+         * @return the time between two same repeated tasks
+         * or 0 for the non repeated task
+         */
         public int getInterval() {
             return interval;
         }
 
-        /** Setup the interval of the repeated task
-         @param interval is the time between two same tasks  */
+        /**
+         * Setup the interval of the repeated task
+         *
+         * @param interval is the time between two same tasks
+         */
         public void setInterval(int interval) {
             this.interval = interval;
         }
 
-        /** Return the activity of the task
-         @return the activity of the task */
+        /**
+         * Return the activity of the task
+         *
+         * @return the activity of the task
+         */
         public boolean isActive() {
             return active;
         }
 
-        /** Setup the activity of the task
-         @param active is the activity of the task */
+        /**
+         * Setup the activity of the task
+         *
+         * @param active is the activity of the task
+         */
         public void setActive(boolean active) {
             this.active = active;
         }
 
-        /** Empty constructor for the task */
+        /**
+         * Empty constructor for the task
+         */
         public TaskClient() {
         }
 
-        /** Constructor for the tasks
-         @param title is the title of the task;
-         @param start is the start time of the task
-         @param end is the end of repeated period
-         @param interval is the time between two same tasks
-         @param description is the description of the task */
+        /**
+         * Constructor for the tasks
+         *
+         * @param title       is the title of the task;
+         * @param start       is the start time of the task
+         * @param end         is the end of repeated period
+         * @param interval    is the time between two same tasks
+         * @param description is the description of the task
+         */
         public TaskClient(String title, long time, long start, long end, int interval, boolean active, String description) {
             this.title = title;
             this.time = time;
@@ -354,155 +485,200 @@ public class XMLParse {
         }
     }
 
-    /** Add the new client to "controller.xml" on controller side
-    @param client is the new client for adding */
-    public static void addClient(Client client) throws Exception {
+    /**
+     * Add the new client to "controller.xml" on controller side
+     *
+     * @param client is the new client for adding
+     */
+    public void addClient(Client client) {
 
-        String fileName = "xml/" + "controller.xml";
-        File file = new File(fileName);
-        XMLParse.Server server = new XMLParse.Server();
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
-        
-        if(file.isFile()) {            
-            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-            server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
-        } 
+        try {
+            String fileName = "xml/" + "controller.xml";
+            File file = new File(fileName);
+            XMLParse.Server server = new XMLParse.Server();
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
-        ServerClient serverClient = new ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
-        server.add(serverClient);
+            if (file.isFile()) {
+                Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+                server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
+            }
 
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(server,new File("xml/" + "controller.xml"));
+            ServerClient serverClient = new ServerClient(client.getLogin(), Integer.toString(client.getPassword()), client.getId());
+            server.add(serverClient);
+
+            Marshaller jaxbMarshaller = jc.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(server, new File("xml/" + "controller.xml"));
+
+        } catch (JAXBException e) {
+            log.error(e.getMessage());
+        }
     }
 
-    /** Change session id of the client in "controller.xml" on controller side
-     @param client is the client information */
-    public static boolean newSessionClient(Client client) throws Exception {
+    /**
+     * Change session id of the client in "controller.xml" on controller side
+     *
+     * @param client is the client information
+     */
+    public boolean newSessionClient(Client client) {
 
-        String fileName = "xml/" + "controller.xml";
-        File file = new File(fileName);
-        XMLParse.Server server = new XMLParse.Server();
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
-        
-        if(file.isFile()) {            
-            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-            server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
-        }
+        try {
+            String fileName = "xml/" + "controller.xml";
+            File file = new File(fileName);
+            XMLParse.Server server = new XMLParse.Server();
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
-        List<XMLParse.ServerClient> clientsList = server.getClients();
-
-        for (XMLParse.ServerClient serverClient: clientsList) {
-            if (serverClient.getLogin().equals(client.getLogin())
-                    && (serverClient.getPassword()).equals(Integer.toString(client.getPassword()))) {
-                serverClient.setId(client.getId());
-
-                Marshaller jaxbMarshaller = jc.createMarshaller();
-                jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-                jaxbMarshaller.marshal(server,file);
-                return true;
+            if (file.isFile()) {
+                Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+                server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
             }
+
+            List<XMLParse.ServerClient> clientsList = server.getClients();
+
+            for (XMLParse.ServerClient serverClient : clientsList) {
+                if (serverClient.getLogin().equals(client.getLogin())
+                        && (serverClient.getPassword()).equals(Integer.toString(client.getPassword()))) {
+                    serverClient.setId(client.getId());
+
+                    Marshaller jaxbMarshaller = jc.createMarshaller();
+                    jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+                    jaxbMarshaller.marshal(server, file);
+                    return true;
+                }
+            }
+        } catch (JAXBException e) {
+            log.error(e.getMessage());
         }
 
         return false;
     }
 
-    /**  Find only login in "controller.xml" on controller side
-    @param client is the client information */
-    public static boolean findLogin(Client client) throws Exception {
+    /**
+     * Find only login in "controller.xml" on controller side
+     *
+     * @param client is the client information
+     */
+    public boolean findLogin(Client client) {
 
-        String fileName = "xml/" + "controller.xml";
-        File file = new File(fileName);
-        XMLParse.Server server = new XMLParse.Server();
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
-        
-        if(file.isFile()) {            
-            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-            server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
-        }
+        try {
+            String fileName = "xml/" + "controller.xml";
+            File file = new File(fileName);
+            XMLParse.Server server = new XMLParse.Server();
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
-        List<XMLParse.ServerClient> clientsList = server.getClients();
-
-        for (XMLParse.ServerClient serverClient: clientsList) {
-            if (serverClient.getLogin().equals(client.getLogin())) {
-                return true;
+            if (file.isFile()) {
+                Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+                server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
             }
+
+            List<XMLParse.ServerClient> clientsList = server.getClients();
+
+            for (XMLParse.ServerClient serverClient : clientsList) {
+                if (serverClient.getLogin().equals(client.getLogin())) {
+                    return true;
+                }
+            }
+
+
+        } catch (JAXBException e) {
+            log.error(e.getMessage());
         }
 
         return false;
     }
 
-    /**  Chack all information about the client in "controller.xml" on controller side
-     @param client is the client information */
-    public static boolean findClient(Client client) throws Exception {
+    /**
+     * Chack all information about the client in "controller.xml" on controller side
+     *
+     * @param client is the client information
+     */
+    public boolean findClient(Client client) {
 
-        String fileName = "xml/" + "controller.xml";
-        File file = new File(fileName);
-        XMLParse.Server server = new XMLParse.Server();
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
-       
-        if(file.isFile()) {            
-            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-            server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
-        }
+        try {
+            String fileName = "xml/" + "controller.xml";
+            File file = new File(fileName);
+            XMLParse.Server server = new XMLParse.Server();
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
-        List<XMLParse.ServerClient> clientsList = server.getClients();
-
-        for (XMLParse.ServerClient serverClient: clientsList) {
-            if (serverClient.getLogin().equals(client.getLogin())
-                    && (serverClient.getPassword()).equals(Integer.toString(client.getPassword()))
-                    && serverClient.getId() == client.getId()) {
-                return true;
+            if (file.isFile()) {
+                Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+                server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
             }
+
+            List<XMLParse.ServerClient> clientsList = server.getClients();
+
+            for (XMLParse.ServerClient serverClient : clientsList) {
+                if (serverClient.getLogin().equals(client.getLogin())
+                        && (serverClient.getPassword()).equals(Integer.toString(client.getPassword()))
+                        && serverClient.getId() == client.getId()) {
+                    return true;
+                }
+            }
+
+
+        } catch (JAXBException e) {
+            log.error(e.getMessage());
         }
 
-        return false;
-    }
+         return false;
+}
 
     /**  Change information about the client in "login.xml" on controller side
      @param client is the client information */
-    public static void changeClient(Client client) throws Exception
-    {
-        String filename = "xml/" + "" + client.getLogin() + ".xml";
-        File file = new File(filename);
-        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
-        XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", 200, "Ok");
-        if(client.getArrayList().size() != 0)
-            for (Task task : client.getArrayList()) {
-                socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
-            }
+    public void changeClient(Client client) {
 
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(socket,file);
+        try {
+            String filename = "xml/" + "" + client.getLogin() + ".xml";
+            File file = new File(filename);
+            XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+            XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", 200, "Ok");
+            if(client.getArrayList().size() != 0)
+                for (Task task : client.getArrayList()) {
+                    socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
+                }
+
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+            Marshaller jaxbMarshaller = jc.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(socket,file);
+
+        } catch (JAXBException e) {
+        log.error(e.getMessage());
+        }
     }
 
 
     /** Ummarshaling the ask from client and give the class Socket
      @param s is the ask from client
      @return socket information */
-    public static Socket inParse(String s) throws Exception
-    {
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+    public Socket inParse(String s) {
 
-        return (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
+        Socket socket = new Socket();
+        try {
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+            socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
+
+        } catch (JAXBException e) {
+        log.error(e.getMessage());
+        }
+
+        return socket;
     }
 
     /** Ummarshaling the ask file from client and give the information about client
      @param s is the ask file from client
      @return client information */
-    public static Client getClient(String s) throws Exception
-    {
-        XMLParse.Socket socket = XMLParse.inParse(s);
+    public Client getClient(String s) {
+
+        Socket socket = inParse(s);
 
         ServerClient client = socket.getServerClient();
         ArrayTaskList tasks = new ArrayTaskList();
 
         Task clientTask;
 
-        for (XMLParse.TaskClient task : socket.getTasks()) {
+        for (TaskClient task : socket.getTasks()) {
             if (task.getInterval() == 0)
                 clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
             else
@@ -512,45 +688,57 @@ public class XMLParse {
             tasks.add(clientTask);
         }
         return new Client(client.getLogin(), client.getPassword(), client.getId(), tasks);
+
     }
 
     /** Ummarshaling the ask file  and give the information about client
      @param file is the ask file from client
      @return client information */
-    public static Client getClient(File file) throws Exception
-    {
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-        XMLParse.Socket socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);
+    public Client getClient(File file) {
 
-        ServerClient client = socket.getServerClient();
-        ArrayTaskList tasks = new ArrayTaskList();
+        Client client = new Client();
+        try {
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+            XMLParse.Socket socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);
 
-        Task clientTask;
 
-        for (XMLParse.TaskClient task : socket.getTasks()) {
-            if (task.getInterval() == 0)
-                clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
-            else
-                clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+            ArrayTaskList tasks = new ArrayTaskList();
+            ServerClient serverClient = socket.getServerClient();
 
-            clientTask.setActive(task.isActive());
-            tasks.add(clientTask);
+            Task clientTask;
+
+            for (XMLParse.TaskClient task : socket.getTasks()) {
+                if (task.getInterval() == 0)
+                    clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
+                else
+                    clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+
+                clientTask.setActive(task.isActive());
+                tasks.add(clientTask);
+            }
+
+            client = new Client(serverClient.getLogin(), serverClient.getPassword(), serverClient.getId(), tasks);
+
+
+        } catch (JAXBException e) {
+        log.error(e.getMessage());
         }
-        return new Client(client.getLogin(), client.getPassword(), client.getId(), tasks);
+
+        return client;
     }
 
     /** Ummarshaling the ask file from client and give the task list for adding
      @param s is the ask from client
      @return tasks is the task list for adding */
-    public static ArrayTaskList getAddTask(String s) throws Exception
-    {
-        XMLParse.Socket socket = XMLParse.inParse(s);
+    public ArrayTaskList getAddTask(String s) {
+
+        Socket socket = inParse(s);
 
         ArrayTaskList tasks = new ArrayTaskList();
         Task clientTask;
 
-        for (XMLParse.TaskClient task : socket.getTasks()) {
+        for (TaskClient task : socket.getTasks()) {
             if (task.getInterval() == 0)
                 clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
             else
@@ -561,19 +749,20 @@ public class XMLParse {
         }
 
         return tasks;
+
     }
 
     /** Ummarshaling the ask file from client and give the task for delete
      @param s is the ask from client
      @return task is the task for delete */
-    public static Task getDeleteTask(String s) throws Exception
-    {
-        XMLParse.Socket socket = XMLParse.inParse(s);
+    public Task getDeleteTask(String s) {
+
+        Socket socket = inParse(s);
 
         ArrayTaskList tasks = new ArrayTaskList();
         Task clientTask;
 
-        for (XMLParse.TaskClient task : socket.getTasks()) {
+        for (TaskClient task : socket.getTasks()) {
             if (task.getInterval() == 0)
                 clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
             else
@@ -584,21 +773,28 @@ public class XMLParse {
         }
 
         return tasks.getTask(0);
+
     }
 
     /** Marshaling the answer file for "autorization" action from client
      @param socket is the information to send to the client
      @return String is the answer for action from client */
-    public static String outParse(Socket socket) throws Exception
-    {
-        StringWriter sw = new StringWriter();
+    public String outParse(Socket socket) {
 
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(socket,sw);
+        String text = "";
+        try {
+            StringWriter sw = new StringWriter();
 
-        String text = sw.toString().replaceAll("\n","");
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+            Marshaller jaxbMarshaller = jc.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            jaxbMarshaller.marshal(socket,sw);
+
+            text = sw.toString().replaceAll("\n","");
+
+        } catch (JAXBException e) {
+        log.error(e.getMessage());
+        }
 
         return text;
     }
@@ -606,26 +802,28 @@ public class XMLParse {
     /** Marshaling the answer file for "view" action from client
      @param client is the information about the client
      @return file is the answer file for "view" action from client */
-    public static String sendTasks(Client client) throws Exception
-    {
+    public String sendTasks(Client client) {
+
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "view", 200, "Ok");
         for (Task task : client.getArrayList()) {
             socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
         }
 
-        return XMLParse.outParse(socket);
+        return outParse(socket);
+
     }
 
     /** Marshaling the answer file for "autorization" action from client
      @param client is the information about the client
      @return file is the answer file for "autorization" action from client */
-    public static String sendId(Client client) throws Exception
-    {
-        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
-        XMLParse.Socket socket = new XMLParse.Socket(serverClient, "user", 200, "Ok");
+    public String sendId(Client client) {
 
-        return XMLParse.outParse(socket);
+        ServerClient serverClient = new ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        Socket socket = new Socket(serverClient, "user", 200, "Ok");
+
+        return outParse(socket);
+
     }
 
     /** Marshaling the answer file for status after some action from client
@@ -633,22 +831,21 @@ public class XMLParse {
      @param code is the answer code to the client
      @param status is the answer to client
      @return file is the answer file for status after some action from client */
-    public static String sendStatus(Client client, int code, String status) throws Exception
-    {
-        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
-        
-        XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", code, status);
+    public String sendStatus(Client client, int code, String status) {
 
-        return XMLParse.outParse(socket);
+        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", code, status);
+        return outParse(socket);
+
     }
 
     /** Marshaling the answer file for "notification" action from client
      @param client is the information about the client
      @return file is the answer file for "notification" action from client */
-    public static String sendTasksByTime(Client client) throws Exception
-    {
-        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
-        XMLParse.Socket socket = new XMLParse.Socket(serverClient, "notification", 200, "Ok");
+    public String sendTasksByTime(Client client) {
+
+        ServerClient serverClient = new ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        Socket socket = new Socket(serverClient, "notification", 200, "Ok");
         final long day = 86400000;
 
         Date realTime = new Date(System.currentTimeMillis());
@@ -661,11 +858,12 @@ public class XMLParse {
 
             for (Task task : value) {
                 if (task.isActive())
-                    socket.addTask(new XMLParse.TaskClient(task.getTitle(),key.getTime(),key.getTime(),key.getTime(),0,task.isActive(),task.getDescription()));
+                    socket.addTask(new TaskClient(task.getTitle(),key.getTime(),key.getTime(),key.getTime(),0,task.isActive(),task.getDescription()));
             }
         }
 
-        return XMLParse.outParse(socket);
+        return outParse(socket);
+
     }
 }
 

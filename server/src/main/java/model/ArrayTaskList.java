@@ -1,12 +1,12 @@
 package model;
  import java.util.Iterator;
  import java.util.NoSuchElementException;
- //import org.apache.log4j.Logger;
+ import org.apache.log4j.Logger;
 
 /** The list of task as array*/
 public class ArrayTaskList extends TaskList {
 
-    //private static final Logger log = Logger.getLogger(ArrayTaskList.class);
+    private static final Logger log = Logger.getLogger(ArrayTaskList.class);
     
     protected Task[] arrayTask = new Task[10];
     private int realSize = 0;

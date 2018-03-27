@@ -5,12 +5,12 @@ import java.util.SortedMap;
 import java.util.TreeMap; 
 import java.util.Set; 
 import java.util.HashSet;
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
 /** class Tasks for work with collections <Task> */
 public class Tasks { 
 
-    //private static final Logger log = Logger.getLogger(Tasks.class);
+    private static final Logger log = Logger.getLogger(Tasks.class);
 
     /** Return the list of tasks between the time period 
     @param tasks is list of Iterable<Task>
@@ -34,7 +34,7 @@ public class Tasks {
                         tasksNew.add(task);                
                     }  
             } catch (NullPointerException e) {
-               // log.error("Tasks.incoming() failed", e);
+               log.error("Tasks.incoming() failed", e);
             }
         }
 
@@ -72,8 +72,7 @@ public class Tasks {
                     dateLocal = task.nextTimeAfter(dateLocal);
                 }                      
         }
-        
-       
+
         return sortedMap;
     } 
 }
