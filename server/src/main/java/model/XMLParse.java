@@ -598,7 +598,9 @@ public class XMLParse {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         jaxbMarshaller.marshal(socket,sw);
 
-        return sw.toString();
+        String text = sw.toString().replaceAll("\n","");
+
+        return text;
     }
 
     /** Marshaling the answer file for "view" action from client
