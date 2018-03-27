@@ -35,9 +35,12 @@ public class Server extends Thread {
 
             while (activeClient) {
                 ask = recieveFile(in);
-                sendFile(out, Model.doWork(ask));
-                activeClient = Model.activeClient(ask);
-            }            
+                if (!ask.equals("")) {
+                    sendFile(out, Model.doWork(ask));
+                    activeClient = Model.activeClient(ask);
+                }
+            }
+
         }
         catch(Exception e)
         {
@@ -62,7 +65,12 @@ public class Server extends Thread {
     @param input is the input for receive
     @return the String from the client */
     private String recieveFile(BufferedReader input) throws Exception {
-        return input.readLine();
+        String messageFromStream = "";
+        while (input.ready()){
+            messageFromStream += input.readLine();
+        }
+        System.out.println(messageFromStream);
+        return messageFromStream;
     }
 
 }
