@@ -34,8 +34,8 @@ public class Server extends Thread {
             String ask;
 
             while (activeClient) {
-                ask = Server.recieveFile(in);
-                Server.sendFile(out, Model.doWork(ask));
+                ask = recieveFile(in);
+                sendFile(out, Model.doWork(ask));
                 activeClient = Model.activeClient(ask);
             }            
         }
@@ -53,7 +53,7 @@ public class Server extends Thread {
     /** Send the @param file using some @param OutputStream
     @param s is the string for send
     @param output is the OutputStream for sending to the client */
-    public static void sendFile(BufferedWriter output, String s) throws IOException {
+    public void sendFile(BufferedWriter output, String s) throws IOException {
 
        output.write(s);
     }
@@ -61,7 +61,7 @@ public class Server extends Thread {
     /** Receive the @return file using some @param InputStream  
     @param input is the input for receive
     @return the String from the client */
-    private static String recieveFile(BufferedReader input) throws Exception {
+    private String recieveFile(BufferedReader input) throws Exception {
         return input.readLine();
     }
 
