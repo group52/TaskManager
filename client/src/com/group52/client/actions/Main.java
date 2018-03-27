@@ -2,7 +2,6 @@ package com.group52.client.actions;
 
 import com.group52.client.view.MainPanel;
 import org.apache.log4j.Logger;
-import java.io.IOException;
 
 /**
  * class Main with start method "void main"
