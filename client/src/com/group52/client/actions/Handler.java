@@ -4,6 +4,8 @@ import com.group52.client.view.*;
 import com.group52.client.view.Calendar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.ServerException;
@@ -42,28 +44,28 @@ public class Handler {
      * @throws JAXBException if JAXB parser has a problem
      * @return file
      */
-    private File getResponseFromServer() throws ServerException, JAXBException {
-        File file = serverDialog.getResponseFromServer();
-        int code = XMLParse.getCodeFromXML(file);
-        String status = XMLParse.getStatusFromXML(file);
+    private BufferedWriter getResponseFromServer() throws IOException, JAXBException {
+        BufferedWriter bw = serverDialog.getResponseFromServer();
+        int code = XMLParse.getCodeFromXML(bw);
+        String status = XMLParse.getStatusFromXML(bw);
         if (code == 400 || code == 401 || code == 404 || code == 405 || code == 415 || code == 500)
             throw new ServerException(status);
-        return file;
+        return bw;
     }
 
     /**
      * method for update TaskList
      */
-    private void updateTaskList () throws ServerException, JAXBException {
+    private void updateTaskList () throws IOException, JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
-            File file = getResponseFromServer();
-            if (XMLParse.getActionFromXML(file).equals("view"))
-            mainPanel.showTaskList(XMLParse.getTasksFromXML((file)));
+            BufferedWriter bw = serverDialog.getResponseFromServer();
+            if (XMLParse.getActionFromXML(bw).equals("view"))
+            mainPanel.showTaskList(XMLParse.getTasksFromXML((bw)));
 
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
-            file = getResponseFromServer();
-            if (XMLParse.getActionFromXML(file).equals("notification"))
-                notificator.setTaskList(XMLParse.getTasks(file));
+            bw = serverDialog.getResponseFromServer();
+            if (XMLParse.getActionFromXML(bw).equals("notification"))
+                notificator.setTaskList(XMLParse.getTasks(bw));
     }
 
     /**
@@ -103,7 +105,7 @@ public class Handler {
          * @throws ServerException if server has a problem
          * @throws JAXBException if JAXB parser has a problem
          */
-        private void editTasksToComboBox (JComboBox comboBox) throws ServerException, JAXBException {
+        private void editTasksToComboBox (JComboBox comboBox) throws IOException, JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
             List<XMLParse.Task> tasks = XMLParse.getTasks(getResponseFromServer());
             comboBox.removeAllItems();
@@ -129,7 +131,7 @@ public class Handler {
                     else XMLParse.createClient(login, password, 0);
 
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("oneMoreUser"));
-                    File response = getResponseFromServer();
+                    BufferedWriter response = getResponseFromServer();
                     int code = XMLParse.getCodeFromXML(response);
                     String status = XMLParse.getStatusFromXML(response);
                     if(code == 200 || code == 201 || code == 202) {
@@ -148,7 +150,7 @@ public class Handler {
                     XMLParse.createClient(login, password, 0);
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("user"));
 
-                    File response = getResponseFromServer();
+                    BufferedWriter response = getResponseFromServer();
                     int code = XMLParse.getCodeFromXML(response);
                     String status = XMLParse.getStatusFromXML(response);
                     if(code == 200 || code == 201 || code == 202) {

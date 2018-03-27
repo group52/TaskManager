@@ -5,7 +5,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -342,11 +342,11 @@ public class XMLParse {
      * @param request for server
      * @return file
      */
-    public static File parseRequestToXML(String request) throws JAXBException {
-        File file = new File("xml/" + request + ".xml");
+    public static BufferedReader parseRequestToXML(String request) throws JAXBException {
         Socket socket = new Socket(client, request);
-        createMarshaller().marshal(socket, file);
-        return file;
+        BufferedReader br = new BufferedReader();
+        createMarshaller().marshal(socket, br);
+        return br;
     }
 
     /**
@@ -362,13 +362,13 @@ public class XMLParse {
      * @throws JAXBException if JAXB parser has a problem
      * @return file
      */
-    public static File parseTaskToXML(String request, String title, String description, long time,
+    public static BufferedReader parseTaskToXML(String request, String title, String description, long time,
                                       long start, long end, int interval, boolean active) throws JAXBException {
-        File file = new File("xml/" + request + ".xml");
         Socket socket = new Socket(client, request);
         socket.addTask(new Task(title,description,time,start,end,interval,active));
-        createMarshaller().marshal(socket, file);
-        return file;
+        BufferedReader br = new BufferedReader();
+        createMarshaller().marshal(socket, br);
+        return br;
     }
 
     /**
@@ -385,14 +385,14 @@ public class XMLParse {
      * @throws JAXBException if JAXB parser has a problem
      * @return file
      */
-    public static File parseTaskToXML(String request, XMLParse.Task oldTask, String title, String description, long time,
+    public static BufferedReader parseTaskToXML(String request, XMLParse.Task oldTask, String title, String description, long time,
                                       long start, long end, int interval, boolean active) throws JAXBException {
-        File file = new File("xml/" + request + ".xml");
         Socket socket = new Socket(client, request);
         socket.addTask(oldTask);
         socket.addTask(new Task(title,description,time,start,end,interval,active));
-        createMarshaller().marshal(socket, file);
-        return file;
+        BufferedReader br = new BufferedReader();
+        createMarshaller().marshal(socket, br);
+        return br;
     }
 
     /**
@@ -402,44 +402,44 @@ public class XMLParse {
      * @throws JAXBException if JAXB parser has a problem
      * @return file
      */
-    public static File parseTaskToXML(String request, XMLParse.Task task) throws JAXBException {
-        File file = new File("xml/" + request + ".xml");
+    public static BufferedReader parseTaskToXML(String request, XMLParse.Task task) throws JAXBException {
         Socket socket = new Socket(client, request);
         socket.addTask(task);
-        createMarshaller().marshal(socket, file);
-        return file;
+        BufferedReader br = new BufferedReader();
+        createMarshaller().marshal(socket, br);
+        return br;
     }
 
     /**
      * method where we get action from XML
-     * @param file is xml file from server
+     * @param br is xml file from server
      * @throws JAXBException if JAXB parser has a problem
      * @return action
      */
-    public static String getActionFromXML(File file) throws JAXBException {
-        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(file);
+    public static String getActionFromXML(BufferedWriter bw) throws JAXBException {
+        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(bw);
         return socket.getAction();
     }
 
     /**
      * method where we get code from XML
-     * @param file is xml file from server
+     * @param br is xml file from server
      * @throws JAXBException if JAXB parser has a problem
      * @return code
      */
-    public static int getCodeFromXML(File file) throws JAXBException {
-        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(file);
+    public static int getCodeFromXML(BufferedWriter bw) throws JAXBException {
+        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(bw);
         return socket.getCode();
     }
 
     /**
      * method where we get status from XML
-     * @param file is xml file from server
+     * @param br is xml file from server
      * @throws JAXBException if JAXB parser has a problem
      * @return status
      */
-    public static String getStatusFromXML(File file) throws JAXBException {
-        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(file);
+    public static String getStatusFromXML(BufferedWriter bw) throws JAXBException {
+        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(bw);
         return socket.getStatus();
     }
 
@@ -449,8 +449,8 @@ public class XMLParse {
      * @throws JAXBException if JAXB parser has a problem
      * @return user id
      */
-    public static int getUserIdFromXML(File file) throws JAXBException {
-        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(file);
+    public static int getUserIdFromXML(BufferedWriter bw) throws JAXBException {
+        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(bw);
         return socket.getClient().getId();
     }
 
@@ -460,8 +460,8 @@ public class XMLParse {
      * @throws JAXBException if JAXB parser has a problem
      * @return tasks
      */
-    public static String getTasksFromXML(File file) throws JAXBException {
-        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(file);
+    public static String getTasksFromXML(BufferedWriter bw) throws JAXBException {
+        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(bw);
         List<XMLParse.Task> tasks = socket.getTasks();
         StringBuilder sb = new StringBuilder();
         for (XMLParse.Task task: tasks) {
@@ -472,12 +472,12 @@ public class XMLParse {
 
     /**
      * method where we get task list from XML
-     * @param file is xml file from server
+     * @param br is xml file from server
      * @throws JAXBException if JAXB parser has a problem
      * @return task list
      */
-    public static List<Task> getTasks(File file) throws JAXBException {
-        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(file);
+    public static List<Task> getTasks(BufferedWriter bw) throws JAXBException {
+        XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(bw);
         return new ArrayList<>(socket.getTasks());
     }
 }
