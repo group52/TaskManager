@@ -37,6 +37,7 @@ public class ServerDialog {
      */
     public void sendXMLToServer(String s) {
         out.println(s);
+        log.info("send xml" + s);
     }
 
     /**
@@ -47,6 +48,7 @@ public class ServerDialog {
         String s = null;
         try {
             s = in.readLine();
+            log.info("get xml" + s);
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
             close();

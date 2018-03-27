@@ -346,7 +346,7 @@ public class XMLParse {
         Socket socket = new Socket(client, request);
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString();
+        return sw.toString().replaceAll("\n","");
     }
 
     /**
@@ -368,7 +368,7 @@ public class XMLParse {
         socket.addTask(new Task(title,description,time,start,end,interval,active));
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString();
+        return sw.toString().replaceAll("\n","");
     }
 
     /**
@@ -392,7 +392,7 @@ public class XMLParse {
         socket.addTask(new Task(title,description,time,start,end,interval,active));
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString();
+        return sw.toString().replaceAll("\n","");
     }
 
     /**
@@ -407,7 +407,7 @@ public class XMLParse {
         socket.addTask(task);
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString();
+        return sw.toString().replaceAll("\n","");
     }
 
     /**

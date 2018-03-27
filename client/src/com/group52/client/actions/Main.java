@@ -22,7 +22,6 @@ public class Main {
         notificationThread.start();
 
         MainPanel mainPanel = new MainPanel();
-
         ServerDialog serverDialog = new ServerDialog(mainPanel.getServerAddress());
 
         new Handler(mainPanel, serverDialog, notificator);
