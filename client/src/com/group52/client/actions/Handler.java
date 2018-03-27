@@ -4,9 +4,6 @@ import com.group52.client.view.*;
 import com.group52.client.view.Calendar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.*;
@@ -44,13 +41,13 @@ public class Handler {
      * @throws JAXBException if JAXB parser has a problem
      * @return file
      */
-    private BufferedWriter getResponseFromServer() throws IOException, JAXBException {
-        BufferedWriter bw = serverDialog.getResponseFromServer();
-        int code = XMLParse.getCodeFromXML(bw);
-        String status = XMLParse.getStatusFromXML(bw);
+    private String getResponseFromServer() throws IOException, JAXBException {
+        String s = serverDialog.getResponseFromServer();
+        int code = XMLParse.getCodeFromXML(s);
+        String status = XMLParse.getStatusFromXML(s);
         if (code == 400 || code == 401 || code == 404 || code == 405 || code == 415 || code == 500)
             throw new ServerException(status);
-        return bw;
+        return s;
     }
 
     /**
@@ -58,14 +55,14 @@ public class Handler {
      */
     private void updateTaskList () throws IOException, JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
-            BufferedWriter bw = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML(bw).equals("view"))
-            mainPanel.showTaskList(XMLParse.getTasksFromXML((bw)));
+            String s = serverDialog.getResponseFromServer();
+            if (XMLParse.getActionFromXML(s).equals("view"))
+            mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
 
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
-            bw = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML(bw).equals("notification"))
-                notificator.setTaskList(XMLParse.getTasks(bw));
+            s = serverDialog.getResponseFromServer();
+            if (XMLParse.getActionFromXML(s).equals("notification"))
+                notificator.setTaskList(XMLParse.getTasks(s));
     }
 
     /**
@@ -131,7 +128,7 @@ public class Handler {
                     else XMLParse.createClient(login, password, 0);
 
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("oneMoreUser"));
-                    BufferedWriter response = getResponseFromServer();
+                    String response = getResponseFromServer();
                     int code = XMLParse.getCodeFromXML(response);
                     String status = XMLParse.getStatusFromXML(response);
                     if(code == 200 || code == 201 || code == 202) {
@@ -150,7 +147,7 @@ public class Handler {
                     XMLParse.createClient(login, password, 0);
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("user"));
 
-                    BufferedWriter response = getResponseFromServer();
+                    String response = getResponseFromServer();
                     int code = XMLParse.getCodeFromXML(response);
                     String status = XMLParse.getStatusFromXML(response);
                     if(code == 200 || code == 201 || code == 202) {
@@ -273,35 +270,27 @@ public class Handler {
             } catch (JAXBException jaxb) {
                 mainPanel.displayErrorMessage("Parse exception");
                 log.error("JAXBException" + jaxb);
-                jaxb.printStackTrace();
             } catch (ServerException se) {
                 mainPanel.displayErrorMessage(se.getMessage());
                 log.error("Server exception" + se);
-                se.printStackTrace();
             } catch (IllegalArgumentException iae) {
                 mainPanel.displayErrorMessage("IllegalArgumentException: " + iae.getMessage());
                 log.error("IllegalArgumentException: ", iae);
-                iae.printStackTrace();
             } catch (NullPointerException npe) {
                 mainPanel.displayErrorMessage("NullPointerException: " + npe.getMessage());
                 log.error("NullPointerException: ", npe);
-                npe.printStackTrace();
             } catch (IndexOutOfBoundsException ioe) {
                 mainPanel.displayErrorMessage("IndexOutOfBoundsException");
                 log.error("IndexOutOfBoundsException: ", ioe);
-                ioe.printStackTrace();
             } catch (NoSuchElementException nse) {
                 mainPanel.displayErrorMessage(nse.getMessage());
                 log.error("NoSuchElementException: ", nse);
-                nse.printStackTrace();
             } catch (IOException io) {
                 mainPanel.displayErrorMessage(io.getMessage());
                 log.error("IOException: ", io);
-                io.printStackTrace();
             } catch (Exception ex) {
                 mainPanel.displayErrorMessage(ex.getMessage());
                 log.error("Exception: ", ex);
-                ex.printStackTrace();
             }
         }
     }
