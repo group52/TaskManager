@@ -58,18 +58,10 @@ public class Model {
      @return sendFile is the file to send to the client */
     public static String doWork(String s) throws Exception {
 
-        String sendFile;
+        String sendAnswer;
         char status = Model.getCommandType(s).charAt(0);
 
-        File recFile = new File("ask.xml");
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter( recFile))){
-            bw.write(s);
-        } catch (FileNotFoundException e) {
-            //log.error("TaskIO.writeText() failed", e);
-        } catch (IOException e) {
-            //log.error("TaskIO.writeText() failed", e);
-        }
-        Client client = XMLParse.getClient(recFile);
+        Client client = XMLParse.getClient(s);
 
         System.out.println(status);
         switch (status) {
@@ -77,13 +69,13 @@ public class Model {
                 if (!XMLParse.findLogin(client)) {                    
                     if (Model.newClient(client)) {
                         XMLParse.changeClient(client);
-                        sendFile = XMLParse.sendId(client);
+                        sendAnswer = XMLParse.sendId(client);
                     }
                     else
-                        sendFile = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
                 }
                 else
-                    sendFile = XMLParse.sendStatus(client, 415, "Already exist");
+                    sendAnswer = XMLParse.sendStatus(client, 415, "Already exist");
                 break;
             case 'u': // "user"
                 if (Model.getAvtorization(client)) {
@@ -91,76 +83,76 @@ public class Model {
                     clientUser.setId(client.getId());
                     clientUser.setPassword(client.getPassword());
                     XMLParse.changeClient(clientUser);
-                    sendFile = XMLParse.sendId(clientUser);
+                    sendAnswer = XMLParse.sendId(clientUser);
                 } else
-                    sendFile = XMLParse.sendStatus(client,404, "Not Found");
+                    sendAnswer = XMLParse.sendStatus(client,404, "Not Found");
                 break;
             case 'n': // "notification"
                 if (Model.checkAvtorization(client)) {
                     Client clientNotification = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    sendFile = XMLParse.sendTasksByTime(clientNotification);
+                    sendAnswer = XMLParse.sendTasksByTime(clientNotification);
                 }
                 else
-                    sendFile = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'v': // "view"
                 if (Model.checkAvtorization(client)) {
                     Client clientView = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    sendFile = XMLParse.sendTasks(clientView);
+                    sendAnswer = XMLParse.sendTasks(clientView);
                 }
                 else
-                    sendFile = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'a': // "add"
                 if (Model.checkAvtorization(client)) {
                     Client clientAdd = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    if (Model.workAdd(clientAdd, XMLParse.getAddTask(recFile)))
-                        sendFile = XMLParse.sendStatus(clientAdd, 201, "Created");
+                    if (Model.workAdd(clientAdd, XMLParse.getAddTask(s)))
+                        sendAnswer = XMLParse.sendStatus(clientAdd, 201, "Created");
                     else
-                        sendFile = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
                 }
                 else
-                    sendFile = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'e': // "edit"
                 if (Model.checkAvtorization(client)) {
                     Client clientEdit = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    Task task = XMLParse.getDeleteTask(recFile);
+                    Task task = XMLParse.getDeleteTask(s);
                     Model.workDelete(clientEdit, task);
-                    ArrayTaskList tasks = XMLParse.getAddTask(recFile);
+                    ArrayTaskList tasks = XMLParse.getAddTask(s);
                     tasks.remove(task);
                     if (Model.workAdd(clientEdit, tasks))
-                        sendFile = XMLParse.sendStatus(clientEdit, 202, "Accepted");
+                        sendAnswer = XMLParse.sendStatus(clientEdit, 202, "Accepted");
                     else
-                        sendFile = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
                 } else
-                    sendFile = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'd': // "delete"
                 if (Model.checkAvtorization(client)) {
                     Client clientDelete = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    if (Model.workDelete(clientDelete, XMLParse.getDeleteTask(recFile)))
-                        sendFile = XMLParse.sendStatus(clientDelete, 202, "Accepted");
+                    if (Model.workDelete(clientDelete, XMLParse.getDeleteTask(s)))
+                        sendAnswer = XMLParse.sendStatus(clientDelete, 202, "Accepted");
                     else
-                        sendFile = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
                 } else
-                    sendFile = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'c': // "close"
                 if (Model.checkAvtorization(client)) {
                     client.setId((int) System.currentTimeMillis());
                     if (XMLParse.newSessionClient(client))
-                        sendFile = XMLParse.sendStatus(client,200, "OK");
+                        sendAnswer = XMLParse.sendStatus(client,200, "OK");
                     else
-                        sendFile = XMLParse.sendStatus(client,400, "Bad Request");
+                        sendAnswer = XMLParse.sendStatus(client,400, "Bad Request");
                 } else
-                    sendFile = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
                 break;
             default:
-                sendFile = XMLParse.sendStatus(client,405, "Method Not Allowed");
+                sendAnswer = XMLParse.sendStatus(client,405, "Method Not Allowed");
                 break;
         }
-        return sendFile;
+        return sendAnswer;
     }
 
     /** Ummarshaling the ask file from client and give the action for controller work

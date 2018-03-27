@@ -479,8 +479,42 @@ public class XMLParse {
     }
 
 
+    /** Ummarshaling the ask from client and give the class Socket
+     @param s is the ask from client
+     @return socket information */
+    public static Socket inParse(String s) throws Exception
+    {
+        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+
+        return (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
+    }
 
     /** Ummarshaling the ask file from client and give the information about client
+     @param s is the ask file from client
+     @return client information */
+    public static Client getClient(String s) throws Exception
+    {
+        XMLParse.Socket socket = XMLParse.inParse(s);
+
+        ServerClient client = socket.getServerClient();
+        ArrayTaskList tasks = new ArrayTaskList();
+
+        Task clientTask;
+
+        for (XMLParse.TaskClient task : socket.getTasks()) {
+            if (task.getInterval() == 0)
+                clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
+            else
+                clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+
+            clientTask.setActive(task.isActive());
+            tasks.add(clientTask);
+        }
+        return new Client(client.getLogin(), client.getPassword(), client.getId(), tasks);
+    }
+
+    /** Ummarshaling the ask file  and give the information about client
      @param file is the ask file from client
      @return client information */
     public static Client getClient(File file) throws Exception
@@ -507,14 +541,11 @@ public class XMLParse {
     }
 
     /** Ummarshaling the ask file from client and give the task list for adding
-     @param file is the ask file from client
+     @param s is the ask from client
      @return tasks is the task list for adding */
-    public static ArrayTaskList getAddTask(File file) throws Exception
+    public static ArrayTaskList getAddTask(String s) throws Exception
     {
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-        XMLParse.Socket socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);
-
+        XMLParse.Socket socket = XMLParse.inParse(s);
 
         ArrayTaskList tasks = new ArrayTaskList();
         Task clientTask;
@@ -533,13 +564,11 @@ public class XMLParse {
     }
 
     /** Ummarshaling the ask file from client and give the task for delete
-     @param file is the ask file from client
+     @param s is the ask from client
      @return task is the task for delete */
-    public static Task getDeleteTask(File file) throws Exception
+    public static Task getDeleteTask(String s) throws Exception
     {
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-        XMLParse.Socket socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);
+        XMLParse.Socket socket = XMLParse.inParse(s);
 
         ArrayTaskList tasks = new ArrayTaskList();
         Task clientTask;
@@ -557,36 +586,33 @@ public class XMLParse {
         return tasks.getTask(0);
     }
 
+    /** Marshaling the answer file for "autorization" action from client
+     @param socket is the information to send to the client
+     @return String is the answer for action from client */
+    public static String outParse(Socket socket) throws Exception
+    {
+        StringWriter sw = new StringWriter();
+
+        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+        Marshaller jaxbMarshaller = jc.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        jaxbMarshaller.marshal(socket,sw);
+
+        return sw.toString();
+    }
+
     /** Marshaling the answer file for "view" action from client
      @param client is the information about the client
      @return file is the answer file for "view" action from client */
     public static String sendTasks(Client client) throws Exception
     {
-        String filename = "xml/" + "answerView" + client.getLogin() + ".xml";
-        File file = new File(filename);
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "view", 200, "Ok");
         for (Task task : client.getArrayList()) {
             socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
         }
 
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(socket,file);
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        String text = "";
-        String alltext = "";
-        while(!(text = br.readLine()).equals("</socket>")) {
-            alltext += text;
-        }
-        alltext += br.readLine();
-
-        file.deleteOnExit();
-
-        return alltext;
+        return XMLParse.outParse(socket);
     }
 
     /** Marshaling the answer file for "autorization" action from client
@@ -594,28 +620,10 @@ public class XMLParse {
      @return file is the answer file for "autorization" action from client */
     public static String sendId(Client client) throws Exception
     {
-        String filename = "xml/" + "answerId" + client.getLogin() + ".xml";
-        File file = new File(filename);
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "user", 200, "Ok");
 
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(socket,file);
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        String text = "";
-        String alltext = "";
-        while(!(text = br.readLine()).equals("</socket>")) {
-            alltext += text;
-        }
-        alltext += br.readLine();
-
-        file.deleteOnExit();
-
-        return alltext;
+        return XMLParse.outParse(socket);
     }
 
     /** Marshaling the answer file for status after some action from client
@@ -625,29 +633,11 @@ public class XMLParse {
      @return file is the answer file for status after some action from client */
     public static String sendStatus(Client client, int code, String status) throws Exception
     {
-        String filename = "xml/" + "answerStatus2" + client.getLogin() + ".xml";
-        File file = new File(filename);
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
         
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", code, status);
 
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(socket,file);
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        String text = "";
-        String alltext = "";
-        while(!(text = br.readLine()).equals("</socket>")) {
-            alltext += text;
-        }
-        alltext += br.readLine();
-
-        file.deleteOnExit();
-
-        return alltext;
+        return XMLParse.outParse(socket);
     }
 
     /** Marshaling the answer file for "notification" action from client
@@ -655,8 +645,6 @@ public class XMLParse {
      @return file is the answer file for "notification" action from client */
     public static String sendTasksByTime(Client client) throws Exception
     {
-        String filename = "xml/" + "answerNotification" + client.getLogin() + ".xml";
-        File file = new File(filename);
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "notification", 200, "Ok");
         final long day = 86400000;
@@ -675,23 +663,7 @@ public class XMLParse {
             }
         }
 
-        JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-        Marshaller jaxbMarshaller = jc.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        jaxbMarshaller.marshal(socket,file);
-
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        String text = "";
-        String alltext = "";
-        while(!(text = br.readLine()).equals("</socket>")) {
-            alltext += text;
-        }
-        alltext += br.readLine();
-
-        file.deleteOnExit();
-
-        return alltext;
+        return XMLParse.outParse(socket);
     }
 }
 
