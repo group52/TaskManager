@@ -346,7 +346,6 @@ public class XMLParse {
         Socket socket = new Socket(client, request);
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-
         return sw.toString();
     }
 
