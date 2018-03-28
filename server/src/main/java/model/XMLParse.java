@@ -67,7 +67,7 @@ public class XMLParse {
     @XmlRootElement(name = "client")
     @XmlAccessorType(XmlAccessType.FIELD)
     class ServerClient {
-        // поля
+
         @XmlAttribute(name = "login")
         String login;
         @XmlAttribute(name = "password")
@@ -153,21 +153,21 @@ public class XMLParse {
     /**
      * subclass Socket for sending and receiving information in xml-format between the controller and client
      */
-    @XmlRootElement(name = "socket")
+    @XmlRootElement (name = "socket")
     @XmlAccessorType(XmlAccessType.FIELD)
     class Socket {
 
-        @XmlElement(name = "client")
-        XMLParse.ServerClient serverClient;
+        @XmlElement
+        private ServerClient client;
 
-        @XmlElement(name = "action")
-        String action;
+        @XmlElement
+        private String action;
 
-        @XmlElement(name = "code")
-        int code;
+        @XmlElement
+        private int code;
 
-        @XmlElement(name = "status")
-        String status;
+        @XmlElement
+        private String status;
 
         @XmlElement(name = "task")
         private ArrayList<XMLParse.TaskClient> tasks;
@@ -196,7 +196,7 @@ public class XMLParse {
          * @return serverClient is the client information
          */
         public ServerClient getServerClient() {
-            return serverClient;
+            return client;
         }
 
         /**
@@ -205,7 +205,7 @@ public class XMLParse {
          * @param serverClient is the client information
          */
         public void setServerClient(ServerClient serverClient) {
-            this.serverClient = serverClient;
+            this.client = serverClient;
         }
 
         /**
@@ -266,7 +266,7 @@ public class XMLParse {
          * Empty constructor for the socket
          */
         public Socket() {
-            serverClient = new ServerClient();
+            client = new ServerClient();
             action = "";
             code = 0;
             status = "";
@@ -308,6 +308,9 @@ public class XMLParse {
         @XmlAttribute(name = "title")
         String title;
 
+        @XmlAttribute(name = "description")
+        String description;
+
         @XmlAttribute(name = "time")
         long time;
 
@@ -322,9 +325,6 @@ public class XMLParse {
 
         @XmlAttribute(name = "active")
         boolean active;
-
-        @XmlAttribute(name = "description")
-        String description;
 
         /**
          * Return the description of the task
@@ -492,6 +492,8 @@ public class XMLParse {
      */
     public void addClient(Client client) {
 
+        log.info("client " + client.getLogin());
+
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -521,6 +523,8 @@ public class XMLParse {
      * @param client is the client information
      */
     public boolean newSessionClient(Client client) {
+
+        log.info("client " + client.getLogin());
 
         try {
             String fileName = "xml/" + "controller.xml";
@@ -560,6 +564,8 @@ public class XMLParse {
      */
     public boolean findLogin(Client client) {
 
+        log.info("client " + client.getLogin());
+
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -594,6 +600,8 @@ public class XMLParse {
      */
     public boolean findClient(Client client) {
 
+        log.info("client " + client.getLogin());
+
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -627,6 +635,8 @@ public class XMLParse {
      @param client is the client information */
     public void changeClient(Client client) {
 
+        log.info("client " + client.getLogin());
+
         try {
             String filename = "xml/" + "" + client.getLogin() + ".xml";
             File file = new File(filename);
@@ -653,6 +663,8 @@ public class XMLParse {
      @return socket information */
     public Socket inParse(String s) {
 
+        log.info("get xml parse" + s);
+
         Socket socket = new Socket();
         try {
             JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
@@ -670,6 +682,8 @@ public class XMLParse {
      @param s is the ask file from client
      @return client information */
     public Client getClient(String s) {
+
+        log.info("get xml parse" + s);
 
         Socket socket = inParse(s);
 

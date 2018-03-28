@@ -65,6 +65,7 @@ public class Model {
      @return sendFile is the file to send to the client */
     public String doWork(String s) {
 
+        log.info("get xml model" + s);
         String sendAnswer;
         char status = getCommandType(s).charAt(0);
 
@@ -167,6 +168,7 @@ public class Model {
      @return action type for controller work */
     public String getCommandType(String s)
     {
+        log.info("get xml model" + s);
         return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
     }
 

@@ -59,6 +59,7 @@ public class Server extends Thread {
     @param output is the OutputStream for sending to the client */
     public void sendFile(PrintWriter output, String s) {
 
+        s = s.replaceAll("\n","");
         output.println(s);
         log.info("send xml" + s);
 
