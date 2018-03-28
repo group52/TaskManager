@@ -302,8 +302,8 @@ public class XMLParse {
         JAXBContext context = JAXBContext.newInstance(XMLParse.Socket.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders",
-                "\n<!DOCTYPE socket SYSTEM  \"client.dtd\">");
+        /*marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders",
+                "\n<!DOCTYPE socket SYSTEM  \"client.dtd\">");*/
         return marshaller;
     }
 
