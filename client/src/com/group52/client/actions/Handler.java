@@ -63,6 +63,19 @@ public class Handler {
 
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
             s = serverDialog.getResponseFromServer();
+            //for testing
+            /*
+            s = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                    "<socket>\n" +
+                    "    <client login=\"Roman\" password=\"1987004225\">\n" +
+                    "        <session_id>813821921</session_id>\n" +
+                    "    </client>\n" +
+                    "    <action>notification</action>\n" +
+                    "    <code>200</code>\n" +
+                    "    <status>Ok</status>\n" +
+                    "    <task title=\"Task12\" time=\"1522270320000\" start=\"1521317976556\" end=\"1521317976556\" interval=\"0\" active=\"true\"/>\n" +
+                    "</socket>    ";
+            */
             if (XMLParse.getActionFromXML(s).equals("notification"))
                 notificator.setTaskList(XMLParse.getTasks(s));
     }

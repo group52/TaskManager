@@ -36,9 +36,9 @@ public class ServerDialog {
      * @param s is string from XMLParse
      */
     public void sendXMLToServer(String s) {
-        s = s.toString().replaceAll("\n","");
+        s = s.replaceAll("\n","");
         out.println(s);
-        log.info("send xml" + s);
+        log.info("send xml: " + s);
     }
 
     /**
@@ -46,15 +46,29 @@ public class ServerDialog {
      * @return in is input
      */
     public String getResponseFromServer() {
+
         String messageFromStream = "";
         try {
             messageFromStream = in.readLine();
-            log.info("get xml" + messageFromStream);
+            log.info("get xml: " + messageFromStream);
             if (messageFromStream == null) log.info("got null response");
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
             close();
         }
+
+        //for testing
+        /*String messageFromStream = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<socket>\n" +
+                "    <client login=\"Roman\" password=\"-2012393935\">\n" +
+                "        <session_id>813821921</session_id>\n" +
+                "    </client>\n" +
+                "    <action>view</action>\n" +
+                "    <code>200</code>\n" +
+                "    <status>Ok</status>\n" +
+                "    <task title=\"Task1\" time=\"1\" start=\"1519858860000\" end=\"1519958860000\" interval=\"60\" active=\"true\"/>\n" +
+                "    <task title=\"Task2\" time=\"10\" start=\"1519859860000\" end=\"1519958860000\" interval=\"600\" active=\"true\"/>\n" +
+                "</socket>\n";*/
         return messageFromStream;
     }
 

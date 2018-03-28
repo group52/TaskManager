@@ -21,11 +21,10 @@ public class Notificator extends Thread {
                 for (XMLParse.Task task : taskList) {
                     if (task != null) {
                         if (task.getTime() == curTime) {
-                            notificationForm.showTask("Time for doing:\n" +
-                                    task.getTitle() + " ,time: " + new Date(task.getTime()) + "\n");
+                            notificationForm.showTask("Time for doing:" + task.getTitle()
+                                    + "\nTime: " + new Date(task.getTime()) + "\n");
                             setTaskToPostpone(task);
                             notificationForm.open();
-                            System.out.println(task.getTitle());
                         }
                     }
                 }
