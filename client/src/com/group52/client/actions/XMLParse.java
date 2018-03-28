@@ -302,8 +302,8 @@ public class XMLParse {
         JAXBContext context = JAXBContext.newInstance(XMLParse.Socket.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        /*marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders",
-                "<!DOCTYPE socket SYSTEM \"client.dtd\">\n");*/
+        marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders",
+                "\n<!DOCTYPE socket SYSTEM  \"client.dtd\">");
         return marshaller;
     }
 
@@ -346,7 +346,7 @@ public class XMLParse {
         Socket socket = new Socket(client, request);
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString().replaceAll("\n","");
+        return sw.toString();
     }
 
     /**
@@ -368,7 +368,7 @@ public class XMLParse {
         socket.addTask(new Task(title,description,time,start,end,interval,active));
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString().replaceAll("\n","");
+        return sw.toString();
     }
 
     /**
@@ -392,7 +392,7 @@ public class XMLParse {
         socket.addTask(new Task(title,description,time,start,end,interval,active));
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString().replaceAll("\n","");
+        return sw.toString();
     }
 
     /**
@@ -407,7 +407,7 @@ public class XMLParse {
         socket.addTask(task);
         StringWriter sw = new StringWriter();
         createMarshaller().marshal(socket, sw);
-        return sw.toString().replaceAll("\n","");
+        return sw.toString();
     }
 
     /**

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<socket>
-    <client login="13" password="49">
-        <session_id>1653417176</session_id>
-    </client>
-    <action></action>
-    <code>200</code>
-    <status>Ok</status>
-</socket>

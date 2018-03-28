@@ -1,16 +1,23 @@
 package model;
 import java.io.*;
+import org.apache.log4j.Logger;
 
 /** class Model make the main work between client-controller conversatio */
 public class Model {
+
+    private Logger log = Logger.getLogger(XMLParse.class);
+    private XMLParse xmlParse = new XMLParse();
+
+    public Model() {
+    }
 
     /** Add list of task to the client task list and change "clientLogin.xml"
      @param client is the information about the client
      @param tasks is the task list for adding
      @return b is "true" if ok */
-    public static boolean workAdd(Client client, ArrayTaskList tasks) throws Exception {
+    public boolean workAdd(Client client, ArrayTaskList tasks) {
         client.addArrayList(tasks);
-        XMLParse.changeClient(client);
+        xmlParse.changeClient(client);
         return true;
     }
 
@@ -18,9 +25,9 @@ public class Model {
      @param client is the information about the client
      @param task is the task for delete
      @return b is "true" if ok */
-    public static boolean workDelete(Client client, Task task) throws Exception {
+    public boolean workDelete(Client client, Task task) {
         if (client.deleteArrayList(task)) {
-            XMLParse.changeClient(client);
+            xmlParse.changeClient(client);
             return true;
         }
         return false;
@@ -29,18 +36,18 @@ public class Model {
     /** Add new client on controller side and set "session_id" to client
      @param client is the information about the client
      @return b is "true" if ok */
-    public static boolean newClient(Client client) throws Exception {
+    public boolean newClient(Client client) {
         client.setId((int) System.currentTimeMillis());
-        XMLParse.addClient(client);
+        xmlParse.addClient(client);
         return true;
     }
 
     /** Change client information on controller side and set "session_id" to client
      @param client is the information about the client
      @return b is "true" if ok */
-    public static boolean getAvtorization(Client client) throws Exception {
+    public boolean getAvtorization(Client client) {
         client.setId((int) System.currentTimeMillis());
-        if (XMLParse.newSessionClient(client)) {
+        if (xmlParse.newSessionClient(client)) {
             return true;
         }
         return false;
@@ -49,107 +56,107 @@ public class Model {
     /** Check the client "session_id" from client with the controller information
      @param client is the information about the client
      @return b is "true" if ok */
-    public static boolean checkAvtorization(Client client) throws Exception {
-        return XMLParse.findClient(client);
+    public boolean checkAvtorization(Client client) {
+        return xmlParse.findClient(client);
     }
 
     /** Check the client "action" from client and do that on controller side
      @param s is the string from the client
      @return sendFile is the file to send to the client */
-    public static String doWork(String s) throws Exception {
+    public String doWork(String s) {
 
         String sendAnswer;
-        char status = Model.getCommandType(s).charAt(0);
+        char status = getCommandType(s).charAt(0);
 
-        Client client = XMLParse.getClient(s);
+        Client client = xmlParse.getClient(s);
 
         System.out.println(status);
         switch (status) {
             case 'o':   // "oneMoreUser"
-                if (!XMLParse.findLogin(client)) {                    
-                    if (Model.newClient(client)) {
-                        XMLParse.changeClient(client);
-                        sendAnswer = XMLParse.sendId(client);
+                if (!xmlParse.findLogin(client)) {
+                    if (newClient(client)) {
+                        xmlParse.changeClient(client);
+                        sendAnswer = xmlParse.sendId(client);
                     }
                     else
-                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
                 }
                 else
-                    sendAnswer = XMLParse.sendStatus(client, 415, "Already exist");
+                    sendAnswer = xmlParse.sendStatus(client, 415, "Already exist");
                 break;
             case 'u': // "user"
-                if (Model.getAvtorization(client)) {
-                    Client clientUser = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
+                if (getAvtorization(client)) {
+                    Client clientUser = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
                     clientUser.setId(client.getId());
                     clientUser.setPassword(client.getPassword());
-                    XMLParse.changeClient(clientUser);
-                    sendAnswer = XMLParse.sendId(clientUser);
+                    xmlParse.changeClient(clientUser);
+                    sendAnswer = xmlParse.sendId(clientUser);
                 } else
-                    sendAnswer = XMLParse.sendStatus(client,404, "Not Found");
+                    sendAnswer = xmlParse.sendStatus(client,404, "Not Found");
                 break;
             case 'n': // "notification"
-                if (Model.checkAvtorization(client)) {
-                    Client clientNotification = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    sendAnswer = XMLParse.sendTasksByTime(clientNotification);
+                if (checkAvtorization(client)) {
+                    Client clientNotification = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    sendAnswer = xmlParse.sendTasksByTime(clientNotification);
                 }
                 else
-                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'v': // "view"
-                if (Model.checkAvtorization(client)) {
-                    Client clientView = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    sendAnswer = XMLParse.sendTasks(clientView);
+                if (checkAvtorization(client)) {
+                    Client clientView = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    sendAnswer = xmlParse.sendTasks(clientView);
                 }
                 else
-                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'a': // "add"
-                if (Model.checkAvtorization(client)) {
-                    Client clientAdd = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    if (Model.workAdd(clientAdd, XMLParse.getAddTask(s)))
-                        sendAnswer = XMLParse.sendStatus(clientAdd, 201, "Created");
+                if (checkAvtorization(client)) {
+                    Client clientAdd = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    if (workAdd(clientAdd, xmlParse.getAddTask(s)))
+                        sendAnswer = xmlParse.sendStatus(clientAdd, 201, "Created");
                     else
-                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
                 }
                 else
-                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'e': // "edit"
-                if (Model.checkAvtorization(client)) {
-                    Client clientEdit = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    Task task = XMLParse.getDeleteTask(s);
-                    Model.workDelete(clientEdit, task);
-                    ArrayTaskList tasks = XMLParse.getAddTask(s);
+                if (checkAvtorization(client)) {
+                    Client clientEdit = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Task task = xmlParse.getDeleteTask(s);
+                    workDelete(clientEdit, task);
+                    ArrayTaskList tasks = xmlParse.getAddTask(s);
                     tasks.remove(task);
-                    if (Model.workAdd(clientEdit, tasks))
-                        sendAnswer = XMLParse.sendStatus(clientEdit, 202, "Accepted");
+                    if (workAdd(clientEdit, tasks))
+                        sendAnswer = xmlParse.sendStatus(clientEdit, 202, "Accepted");
                     else
-                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
                 } else
-                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'd': // "delete"
-                if (Model.checkAvtorization(client)) {
-                    Client clientDelete = XMLParse.getClient(new File("" + client.getLogin() + ".xml"));
-                    if (Model.workDelete(clientDelete, XMLParse.getDeleteTask(s)))
-                        sendAnswer = XMLParse.sendStatus(clientDelete, 202, "Accepted");
+                if (checkAvtorization(client)) {
+                    Client clientDelete = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    if (workDelete(clientDelete, xmlParse.getDeleteTask(s)))
+                        sendAnswer = xmlParse.sendStatus(clientDelete, 202, "Accepted");
                     else
-                        sendAnswer = XMLParse.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
                 } else
-                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'c': // "close"
-                if (Model.checkAvtorization(client)) {
+                if (checkAvtorization(client)) {
                     client.setId((int) System.currentTimeMillis());
-                    if (XMLParse.newSessionClient(client))
-                        sendAnswer = XMLParse.sendStatus(client,200, "OK");
+                    if (xmlParse.newSessionClient(client))
+                        sendAnswer = xmlParse.sendStatus(client,200, "OK");
                     else
-                        sendAnswer = XMLParse.sendStatus(client,400, "Bad Request");
+                        sendAnswer = xmlParse.sendStatus(client,400, "Bad Request");
                 } else
-                    sendAnswer = XMLParse.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             default:
-                sendAnswer = XMLParse.sendStatus(client,405, "Method Not Allowed");
+                sendAnswer = xmlParse.sendStatus(client,405, "Method Not Allowed");
                 break;
         }
         return sendAnswer;
@@ -158,7 +165,7 @@ public class Model {
     /** Ummarshaling the ask file from client and give the action for controller work
      @param s is the ask from client
      @return action type for controller work */
-    public static String getCommandType(String s) throws Exception
+    public String getCommandType(String s)
     {
         return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
     }
@@ -166,8 +173,8 @@ public class Model {
    /** Check if the client want to finish the session
     @param recFile is the file from the client
     @return b is "true" if ok */
-    public static boolean activeClient(String recFile) throws Exception {
-        char status = Model.getCommandType(recFile).charAt(0);
+    public boolean activeClient(String recFile) {
+        char status = getCommandType(recFile).charAt(0);
 
         switch (status) {
             case 'c': // "close"
