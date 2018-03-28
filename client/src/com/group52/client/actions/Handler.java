@@ -52,6 +52,8 @@ public class Handler {
 
     /**
      * method for update TaskList
+     * @throws IOException if we have input/output mistake
+     * @throws JAXBException if JAXB parser has a problem
      */
     private void updateTaskList () throws IOException, JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
@@ -70,7 +72,6 @@ public class Handler {
      */
     public class Listener implements ActionListener {
 
-        private WelcomeForm welcomeForm = new WelcomeForm();
         private SignUpForm signUpForm = new SignUpForm();
         private SignInForm signInForm = new SignInForm();
         private AddTaskForm unrepeatableTaskForm = new AddTaskForm("Unrepeatable");
@@ -78,6 +79,7 @@ public class Handler {
         private EditTaskForm editTaskForm = new EditTaskForm();
         private DeleteTaskForm deleteTaskForm = new DeleteTaskForm();
         private NotificationForm notificationForm = new NotificationForm();
+        private WelcomeForm welcomeForm = new WelcomeForm();
 
         /**
          * constructor without arguments
@@ -136,7 +138,6 @@ public class Handler {
                         XMLParse.setId(XMLParse.getUserIdFromXML(response));
                         signUpForm.close();
                         welcomeForm.close();
-                        updateTaskList();
                         mainPanel.open();
                     }
                 }

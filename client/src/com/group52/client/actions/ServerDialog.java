@@ -45,15 +45,17 @@ public class ServerDialog {
      * @return in is input
      */
     public String getResponseFromServer() {
-        String s = null;
+        String messageFromStream = "";
         try {
-            s = in.readLine();
-            log.info("get xml" + s);
+            if (in.ready() && (messageFromStream = in.readLine()) != null){
+                System.out.println(messageFromStream);
+            }
+            log.info("get xml" + messageFromStream);
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
             close();
         }
-        return s;
+        return messageFromStream;
     }
 
     /**
