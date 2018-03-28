@@ -1,10 +1,25 @@
 package model;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /** class Client give information about user for the controller */
+@XmlRootElement(name = "Client")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Client {
 
+    @XmlElement(name = "login")
     private String login;
+
+    @XmlElement(name = "password")
     private int password;
+
+    @XmlElement(name = "listoftask")
     private ArrayTaskList arrayList;
+
+    @XmlElement(name = "id")
     private int id = 0;
 
     /** Empty constructor for the client */

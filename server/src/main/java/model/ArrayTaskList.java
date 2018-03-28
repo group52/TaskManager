@@ -1,16 +1,26 @@
 package model;
+ import javax.xml.bind.annotation.XmlAccessType;
+ import javax.xml.bind.annotation.XmlAccessorType;
+ import javax.xml.bind.annotation.XmlElement;
+ import javax.xml.bind.annotation.XmlRootElement;
  import java.util.Iterator;
  import java.util.NoSuchElementException;
  //import org.apache.log4j.Logger;
 
 /** The list of task as array*/
+@XmlRootElement(name = "ArraytaskList")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ArrayTaskList extends TaskList {
 
     //private static final Logger log = Logger.getLogger(ArrayTaskList.class);
-    
+    @XmlElement(name = "Task")
     protected Task[] arrayTask = new Task[10];
     private int realSize = 0;
-    
+
+    // empty constructor for JAX
+    public ArrayTaskList(){
+
+    }
     /** Adding new task to the TaskList
     @param task is new task for adding 
     @throw NullPointerException means task is null */
