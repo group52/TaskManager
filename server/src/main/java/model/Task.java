@@ -1,22 +1,49 @@
 package model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 import java.io.Serializable;
 import org.apache.log4j.Logger;
 
 /** class Task for planning the day */
+@XmlRootElement(name = "Task")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Task implements Cloneable, Serializable {
 
     private static final Logger log = Logger.getLogger(Task.class);
 
+    @XmlElement(name = "title")
     private String title;
+
+    @XmlElement(name = "time")
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     private Date time;
+
+    @XmlElement(name = "start")
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     private Date start;
+
+    @XmlElement(name = "end")
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
     private Date end;
+
+    @XmlElement(name = "interval")
     private int interval;
+
+    @XmlElement(name = "active")
     private boolean active;
+
+    @XmlElement(name = "description")
     private String description;
 
+    // empty constructor for JAX
+    public Task(){
+
+    }
        
     /** Constructor for non repeated tasks
     @param title is the title of the task
