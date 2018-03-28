@@ -20,7 +20,7 @@ public class XMLParse {
     /**
      * inner class Client for construct login, password, user id fields
      */
-    @XmlRootElement(name = "user")
+    @XmlRootElement(name = "client")
     @XmlAccessorType(XmlAccessType.FIELD)
     private static class Client {
 
@@ -28,7 +28,7 @@ public class XMLParse {
         String login;
         @XmlAttribute(name = "password")
         String password;
-        @XmlElement
+        @XmlElement(name = "session_id")
         int id;
 
         String getLogin() {
