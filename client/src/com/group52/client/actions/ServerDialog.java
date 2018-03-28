@@ -47,10 +47,9 @@ public class ServerDialog {
     public String getResponseFromServer() {
         String messageFromStream = "";
         try {
-            if (in.ready() && (messageFromStream = in.readLine()) != null){
-                System.out.println(messageFromStream);
-            }
+            messageFromStream = in.readLine();
             log.info("get xml" + messageFromStream);
+            if (messageFromStream == null) log.info("got null response");
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
             close();
