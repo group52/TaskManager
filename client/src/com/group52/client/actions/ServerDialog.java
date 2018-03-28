@@ -11,8 +11,8 @@ public class ServerDialog {
 
     private Logger log = Logger.getLogger(Handler.class);
     private Socket socket;
-    private static BufferedReader in;
-    private static PrintWriter out;
+    private BufferedReader in;
+    private PrintWriter out;
 
     /**
      * creating server dialog constructor
@@ -36,6 +36,7 @@ public class ServerDialog {
      * @param s is string from XMLParse
      */
     public void sendXMLToServer(String s) {
+        s = s.toString().replaceAll("\n","");
         out.println(s);
         log.info("send xml" + s);
     }

@@ -1,0 +1,6 @@
+2018-03-28 17:56:48 INFO  Server:75 - get xml<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+2018-03-28 18:02:29 INFO  Server:75 - get xml<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+2018-03-28 18:06:20 INFO  Server:75 - get xml<?xml version="1.0" encoding="UTF-8" standalone="yes"?><socket>    <client login="1122" password="1122">        <id>0</id>    </client>    <action>oneMoreUser</action>    <code>0</code></socket>
+2018-03-28 18:06:20 ERROR XMLParse:663 - 3 counts of IllegalAnnotationExceptions
+2018-03-28 18:10:02 INFO  Server:75 - get xml<?xml version="1.0" encoding="UTF-8" standalone="yes"?>###<socket>###    <client login="1221" password="12">###        <id>0</id>###    </client>###    <action>oneMoreUser</action>###    <code>0</code>###</socket>###
+2018-03-28 18:10:02 ERROR XMLParse:665 - 3 counts of IllegalAnnotationExceptions

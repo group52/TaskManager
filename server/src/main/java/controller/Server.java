@@ -30,7 +30,7 @@ public class Server extends Thread {
         try
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter out = new BufferedWriter(new PrintWriter(socket.getOutputStream(), true));
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             Model model = new Model();
             boolean activeClient = true;
@@ -57,13 +57,11 @@ public class Server extends Thread {
     /** Send the @param file using some @param OutputStream
     @param s is the string for send
     @param output is the OutputStream for sending to the client */
-    public void sendFile(BufferedWriter output, String s) {
+    public void sendFile(PrintWriter output, String s) {
 
-        try {
-            output.write(s);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
+        output.println(s);
+        log.info("send xml" + s);
+
     }
     
     /** Receive the @return file using some @param InputStream  
@@ -71,16 +69,15 @@ public class Server extends Thread {
     @return the String from the client */
     private String recieveFile(BufferedReader input) {
 
-        String text = "";
+        String messageFromStream = "";
         try {
-            while (input.ready()){
-                text = input.readLine();
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage());
+            messageFromStream = input.readLine();
+            log.info("get xml" + messageFromStream);
+            if (messageFromStream == null) log.info("got null response");
+        } catch (IOException ioe) {
+            log.error("InputOutput exception: ", ioe);
         }
-
-        return text;
+        return messageFromStream;
     }
 
 }
