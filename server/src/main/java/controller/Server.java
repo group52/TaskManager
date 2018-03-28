@@ -38,8 +38,10 @@ public class Server extends Thread {
 
             while (activeClient) {
                 ask = recieveFile(in);
-                sendFile(out, model.doWork(ask));
-                activeClient = model.activeClient(ask);
+                if (!ask.equals("")) {
+                    sendFile(out, model.doWork(ask));
+                    activeClient = model.activeClient(ask);
+                }
             }            
         } catch(IOException e) {
             log.error(e.getMessage());
@@ -71,7 +73,9 @@ public class Server extends Thread {
 
         String text = "";
         try {
-            text = input.readLine();
+            while (input.ready()){
+                text = input.readLine();
+            }
         } catch (IOException e) {
             log.error(e.getMessage());
         }
