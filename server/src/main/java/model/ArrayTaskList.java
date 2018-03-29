@@ -189,9 +189,11 @@ public class ArrayTaskList extends TaskList {
     @return a string representation of the object */
     public String toString() {
         String bigString = getClass().getName() + "[";
-        
-        for (Task task : this) {
-            bigString = bigString + task.toString();
+
+        if (this.size()>0) {
+            for (Task task : this) {
+                bigString = bigString + task.toString();
+            }
         }
     
         return bigString + "]";

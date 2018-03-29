@@ -7,14 +7,14 @@ public class Client {
     private Logger log = Logger.getLogger(Client.class);
 
     private String login;
-    private int password;
+    private String password;
     private ArrayTaskList arrayList;
     private int id = 0;
 
     /** Empty constructor for the client */
     public Client() {
         this.login = "";
-        this.password = 0;
+        this.password ="";
         this.arrayList = new ArrayTaskList();
     }
 
@@ -26,7 +26,7 @@ public class Client {
     
     /** Return the password of the client
     @return password is the password of the client */
-    public int getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -56,7 +56,7 @@ public class Client {
     
     /** Setup the password for the client
     @param password is the password for the client */
-    public void setPassword(int password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -66,7 +66,7 @@ public class Client {
     @param arrayList is the task list for the client */
     public Client(String login, String password, ArrayTaskList arrayList){
         this.login = login;
-        this.password = password.hashCode();
+        this.password = password;
         this.arrayList = arrayList;
     }
 
@@ -77,7 +77,7 @@ public class Client {
     @param arrayList is the task list for the client */
     public Client(String login, String password, int id, ArrayTaskList arrayList){
         this.login = login;
-        this.password = password.hashCode();
+        this.password = password;
         this.id = id;
         this.arrayList = arrayList;
     }

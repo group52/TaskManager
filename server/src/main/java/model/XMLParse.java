@@ -30,7 +30,7 @@ public class XMLParse {
      */
     @XmlRootElement(name = "controller")
     @XmlAccessorType(XmlAccessType.FIELD)
-    class Server {
+ static  class Server {
 
         @XmlElement(name = "client")
         private ArrayList<XMLParse.ServerClient> clients;
@@ -66,7 +66,7 @@ public class XMLParse {
      */
     @XmlRootElement(name = "client")
     @XmlAccessorType(XmlAccessType.FIELD)
-    class ServerClient {
+   static class ServerClient {
 
         @XmlAttribute(name = "login")
         String login;
@@ -155,22 +155,24 @@ public class XMLParse {
      */
     @XmlRootElement (name = "socket")
     @XmlAccessorType(XmlAccessType.FIELD)
-    class Socket {
+   static class Socket {
 
-        @XmlElement
+        @XmlElement (name = "client")
         private ServerClient client;
 
-        @XmlElement
+        @XmlElement (name = "action")
         private String action;
 
-        @XmlElement
+        @XmlElement (name = "code")
         private int code;
 
-        @XmlElement
+        @XmlElement (name = "status")
         private String status;
 
         @XmlElement(name = "task")
         private ArrayList<XMLParse.TaskClient> tasks;
+
+
 
         /**
          * Return the tasks of the client
@@ -304,7 +306,7 @@ public class XMLParse {
      */
     @XmlRootElement(name = "task")
     @XmlAccessorType(XmlAccessType.FIELD)
-    class TaskClient {
+  static  class TaskClient {
         @XmlAttribute(name = "title")
         String title;
 
@@ -505,7 +507,7 @@ public class XMLParse {
                 server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
             }
 
-            ServerClient serverClient = new ServerClient(client.getLogin(), Integer.toString(client.getPassword()), client.getId());
+            ServerClient serverClient = new ServerClient(client.getLogin(), client.getPassword(), client.getId());
             server.add(serverClient);
 
             Marshaller jaxbMarshaller = jc.createMarshaller();
@@ -541,7 +543,7 @@ public class XMLParse {
 
             for (XMLParse.ServerClient serverClient : clientsList) {
                 if (serverClient.getLogin().equals(client.getLogin())
-                        && (serverClient.getPassword()).equals(Integer.toString(client.getPassword()))) {
+                        && (serverClient.getPassword()).equals(client.getPassword())) {
                     serverClient.setId(client.getId());
 
                     Marshaller jaxbMarshaller = jc.createMarshaller();
@@ -617,7 +619,7 @@ public class XMLParse {
 
             for (XMLParse.ServerClient serverClient : clientsList) {
                 if (serverClient.getLogin().equals(client.getLogin())
-                        && (serverClient.getPassword()).equals(Integer.toString(client.getPassword()))
+                        && (serverClient.getPassword()).equals(client.getPassword())
                         && serverClient.getId() == client.getId()) {
                     return true;
                 }
@@ -640,7 +642,7 @@ public class XMLParse {
         try {
             String filename = "xml/" + "" + client.getLogin() + ".xml";
             File file = new File(filename);
-            XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+            XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
             XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", 200, "Ok");
             if(client.getArrayList().size() != 0)
                 for (Task task : client.getArrayList()) {
@@ -666,10 +668,13 @@ public class XMLParse {
         log.info("get xml parse" + s);
 
         Socket socket = new Socket();
+
         try {
             JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
             Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
             socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
+            System.out.println(socket.getServerClient().getLogin());
+            return socket;
 
         } catch (JAXBException e) {
         log.error(e.getMessage());
@@ -686,6 +691,7 @@ public class XMLParse {
         log.info("get xml parse" + s);
 
         Socket socket = inParse(s);
+        System.out.println(socket.getServerClient().getLogin());
 
         ServerClient client = socket.getServerClient();
         ArrayTaskList tasks = new ArrayTaskList();
@@ -818,7 +824,7 @@ public class XMLParse {
      @return file is the answer file for "view" action from client */
     public String sendTasks(Client client) {
 
-        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "view", 200, "Ok");
         for (Task task : client.getArrayList()) {
             socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
@@ -833,7 +839,7 @@ public class XMLParse {
      @return file is the answer file for "autorization" action from client */
     public String sendId(Client client) {
 
-        ServerClient serverClient = new ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        ServerClient serverClient = new ServerClient(client.getLogin(),client.getPassword(),client.getId());
         Socket socket = new Socket(serverClient, "user", 200, "Ok");
 
         return outParse(socket);
@@ -847,7 +853,7 @@ public class XMLParse {
      @return file is the answer file for status after some action from client */
     public String sendStatus(Client client, int code, String status) {
 
-        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", code, status);
         return outParse(socket);
 
@@ -858,7 +864,7 @@ public class XMLParse {
      @return file is the answer file for "notification" action from client */
     public String sendTasksByTime(Client client) {
 
-        ServerClient serverClient = new ServerClient(client.getLogin(),Integer.toString(client.getPassword()),client.getId());
+        ServerClient serverClient = new ServerClient(client.getLogin(),client.getPassword(),client.getId());
         Socket socket = new Socket(serverClient, "notification", 200, "Ok");
         final long day = 86400000;
 
