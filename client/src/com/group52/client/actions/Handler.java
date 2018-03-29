@@ -190,6 +190,8 @@ public class Handler {
                     long start = repeatableTaskForm.getStartTime();
                     long end = repeatableTaskForm.getEndTime();
                     int interval = repeatableTaskForm.getInterval();
+                    if (start > end)
+                        throw new IOException("Start can't be after end");
                     boolean active = repeatableTaskForm.activeBox.isSelected();
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add",
                             title, description, 0, start, end, interval, active));
@@ -211,6 +213,8 @@ public class Handler {
                         interval = editTaskForm.getInterval();
                     } else time = editTaskForm.getStartTime();
                     boolean active = editTaskForm.activeBox.isSelected();
+                    if (start > end)
+                        throw new IOException("Start can't be after end");
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("edit",
                             oldTask, title, description, time, start, end, interval, active));
                     updateTaskList();
