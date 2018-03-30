@@ -642,7 +642,7 @@ public class XMLParse {
         log.info("changeClient " + client.getLogin());
 
         try {
-            String filename = "xml/" + "" + client.getLogin() + ".xml";
+            String filename = "xml/" + client.getLogin() + ".xml";
             File file = new File(filename);
             XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
             XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", 200, "Ok");

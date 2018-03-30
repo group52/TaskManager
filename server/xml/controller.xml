@@ -48,4 +48,7 @@
     <client login="4" password="1">
         <session_id>1994251961</session_id>
     </client>
+    <client login="21" password="1">
+        <session_id>2032861358</session_id>
+    </client>
 </controller>

@@ -78,7 +78,6 @@ public class Server extends Thread {
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
         }
-        System.out.println(messageFromStream);
         return messageFromStream;
     }
 

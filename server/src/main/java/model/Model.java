@@ -70,6 +70,7 @@ public class Model {
         char status = getCommandType(s).charAt(0);
 
         Client client = xmlParse.getClient(s);
+        File clientFile = new File("xml/" + client.getLogin() + ".xml");
 
         System.out.println(status);
         switch (status) {
@@ -83,9 +84,8 @@ public class Model {
                 break;
             case 'u': // "user"
                 if (getAvtorization(client)) {
-                    Client clientUser = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Client clientUser = xmlParse.getClient(clientFile);
                     clientUser.setId(client.getId());
-                    clientUser.setPassword(client.getPassword());
                     xmlParse.changeClient(clientUser);
                     sendAnswer = xmlParse.sendId(clientUser);
                 } else
@@ -93,7 +93,7 @@ public class Model {
                 break;
             case 'n': // "notification"
                 if (checkAvtorization(client)) {
-                    Client clientNotification = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Client clientNotification = xmlParse.getClient(clientFile);
                     sendAnswer = xmlParse.sendTasksByTime(clientNotification);
                 }
                 else
@@ -101,7 +101,7 @@ public class Model {
                 break;
             case 'v': // "view"
                 if (checkAvtorization(client)) {
-                    Client clientView = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Client clientView = xmlParse.getClient(clientFile);
                     sendAnswer = xmlParse.sendTasks(clientView);
                 }
                 else
@@ -109,7 +109,7 @@ public class Model {
                 break;
             case 'a': // "add"
                 if (checkAvtorization(client)) {
-                    Client clientAdd = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Client clientAdd = xmlParse.getClient(clientFile);
                     if (workAdd(clientAdd, xmlParse.getAddTask(s)))
                         sendAnswer = xmlParse.sendStatus(clientAdd, 201, "Created");
                     else
@@ -120,7 +120,7 @@ public class Model {
                 break;
             case 'e': // "edit"
                 if (checkAvtorization(client)) {
-                    Client clientEdit = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Client clientEdit = xmlParse.getClient(clientFile);
                     Task task = xmlParse.getDeleteTask(s);
                     workDelete(clientEdit, task);
                     ArrayTaskList tasks = xmlParse.getAddTask(s);
@@ -134,7 +134,7 @@ public class Model {
                 break;
             case 'd': // "delete"
                 if (checkAvtorization(client)) {
-                    Client clientDelete = xmlParse.getClient(new File("" + client.getLogin() + ".xml"));
+                    Client clientDelete = xmlParse.getClient(clientFile);
                     if (workDelete(clientDelete, xmlParse.getDeleteTask(s)))
                         sendAnswer = xmlParse.sendStatus(clientDelete, 202, "Accepted");
                     else
