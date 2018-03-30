@@ -30,4 +30,22 @@
     <client login="111" password="49">
         <session_id>1654394574</session_id>
     </client>
+    <client login="16" password="16">
+        <session_id>1988661320</session_id>
+    </client>
+    <client login="17" password="17">
+        <session_id>1990395101</session_id>
+    </client>
+    <client login="18" password="1">
+        <session_id>1991216518</session_id>
+    </client>
+    <client login="19" password="9">
+        <session_id>1991769359</session_id>
+    </client>
+    <client login="2" password="1">
+        <session_id>1993217473</session_id>
+    </client>
+    <client login="4" password="1">
+        <session_id>1994251961</session_id>
+    </client>
 </controller>

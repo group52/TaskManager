@@ -494,7 +494,7 @@ public class XMLParse {
      */
     public void addClient(Client client) {
 
-        log.info("client " + client.getLogin());
+        log.info("addClient " + client.getLogin());
 
         try {
             String fileName = "xml/" + "controller.xml";
@@ -526,7 +526,7 @@ public class XMLParse {
      */
     public boolean newSessionClient(Client client) {
 
-        log.info("client " + client.getLogin());
+        log.info("newSessionClient " + client.getLogin());
 
         try {
             String fileName = "xml/" + "controller.xml";
@@ -566,7 +566,7 @@ public class XMLParse {
      */
     public boolean findLogin(Client client) {
 
-        log.info("client " + client.getLogin());
+        log.info("findLogin " + client.getLogin());
 
         try {
             String fileName = "xml/" + "controller.xml";
@@ -602,7 +602,7 @@ public class XMLParse {
      */
     public boolean findClient(Client client) {
 
-        log.info("client " + client.getLogin());
+        log.info("findClient " + client.getLogin());
 
         try {
             String fileName = "xml/" + "controller.xml";
@@ -619,8 +619,10 @@ public class XMLParse {
 
             for (XMLParse.ServerClient serverClient : clientsList) {
                 if (serverClient.getLogin().equals(client.getLogin())
-                        && (serverClient.getPassword()).equals(client.getPassword())
+                        && serverClient.getPassword().equals(client.getPassword())
                         && serverClient.getId() == client.getId()) {
+                    log.info("client " + serverClient.getLogin() + "client " + client.getLogin() +
+                            serverClient.getPassword() + "client " + client.getPassword() + serverClient.getId() + "client " + client.getId());
                     return true;
                 }
             }
@@ -630,14 +632,14 @@ public class XMLParse {
             log.error(e.getMessage());
         }
 
-         return false;
+        return false;
 }
 
     /**  Change information about the client in "login.xml" on controller side
      @param client is the client information */
     public void changeClient(Client client) {
 
-        log.info("client " + client.getLogin());
+        log.info("changeClient " + client.getLogin());
 
         try {
             String filename = "xml/" + "" + client.getLogin() + ".xml";
@@ -665,7 +667,7 @@ public class XMLParse {
      @return socket information */
     public Socket inParse(String s) {
 
-        log.info("get xml parse" + s);
+        log.info("inParse" + s);
 
         Socket socket = new Socket();
 
@@ -673,11 +675,10 @@ public class XMLParse {
             JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
             Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
             socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
-            System.out.println(socket.getServerClient().getLogin());
             return socket;
 
         } catch (JAXBException e) {
-        log.error(e.getMessage());
+            log.error(e.getMessage());
         }
 
         return socket;
@@ -688,10 +689,9 @@ public class XMLParse {
      @return client information */
     public Client getClient(String s) {
 
-        log.info("get xml parse" + s);
+        log.info("getClient" + s);
 
         Socket socket = inParse(s);
-        System.out.println(socket.getServerClient().getLogin());
 
         ServerClient client = socket.getServerClient();
         ArrayTaskList tasks = new ArrayTaskList();
@@ -711,39 +711,56 @@ public class XMLParse {
 
     }
 
+    /** Ummarshaling the ask from client and give the class Socket
+     @param file is the file client
+     @return socket information */
+    public Socket inParse(File file) {
+
+        log.info("inParse File" + file.getName());
+
+        Socket socket = new Socket();
+
+        try {
+            JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
+            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
+            socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);
+            return socket;
+
+        } catch (JAXBException e) {
+            log.error(e.getMessage());
+        }
+
+        return socket;
+    }
+
     /** Ummarshaling the ask file  and give the information about client
      @param file is the ask file from client
      @return client information */
     public Client getClient(File file) {
 
+        log.info("getClient from file" + file.getPath());
         Client client = new Client();
-        try {
-            JAXBContext jc = JAXBContext.newInstance(XMLParse.Socket.class);
-            Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-            XMLParse.Socket socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(file);
 
+        Socket socket = inParse(file);
 
-            ArrayTaskList tasks = new ArrayTaskList();
-            ServerClient serverClient = socket.getServerClient();
+        ArrayTaskList tasks = new ArrayTaskList();
+        ServerClient serverClient = socket.getServerClient();
 
-            Task clientTask;
+        Task clientTask;
 
-            for (XMLParse.TaskClient task : socket.getTasks()) {
-                if (task.getInterval() == 0)
-                    clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
-                else
-                    clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+        for (XMLParse.TaskClient task : socket.getTasks()) {
+            if (task.getInterval() == 0)
+                clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
+            else
+                clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
 
-                clientTask.setActive(task.isActive());
-                tasks.add(clientTask);
-            }
-
-            client = new Client(serverClient.getLogin(), serverClient.getPassword(), serverClient.getId(), tasks);
-
-
-        } catch (JAXBException e) {
-        log.error(e.getMessage());
+            clientTask.setActive(task.isActive());
+            tasks.add(clientTask);
         }
+
+        client = new Client(serverClient.getLogin(), serverClient.getPassword(), serverClient.getId(), tasks);
+
+
 
         return client;
     }

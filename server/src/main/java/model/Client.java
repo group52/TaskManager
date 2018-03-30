@@ -14,7 +14,7 @@ public class Client {
     /** Empty constructor for the client */
     public Client() {
         this.login = "";
-        this.password ="";
+        this.password = "";
         this.arrayList = new ArrayTaskList();
     }
 
@@ -111,7 +111,7 @@ public class Client {
         Client other = (Client) obj;
 
         return login.equals(other.login)
-                && password == other.password
+                && password.equals(other.password)
                 && arrayList.equals(other.arrayList);
     }
 
@@ -124,7 +124,7 @@ public class Client {
 
 
         return primeNumber1 * login.hashCode()
-                + primeNumber2 * new Integer(password).hashCode()
+                + primeNumber2 * password.hashCode()
                 + primeNumber3 * arrayList.hashCode();
     }
 

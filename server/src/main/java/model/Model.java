@@ -36,10 +36,10 @@ public class Model {
     /** Add new client on controller side and set "session_id" to client
      @param client is the information about the client
      @return b is "true" if ok */
-    public boolean newClient(Client client) {
+    public Client newClient(Client client) {
         client.setId((int) System.currentTimeMillis());
         xmlParse.addClient(client);
-        return true;
+        return client;
     }
 
     /** Change client information on controller side and set "session_id" to client
@@ -75,12 +75,8 @@ public class Model {
         switch (status) {
             case 'o':   // "oneMoreUser"
                 if (!xmlParse.findLogin(client)) {
-                    if (newClient(client)) {
-                        xmlParse.changeClient(client);
-                        sendAnswer = xmlParse.sendId(client);
-                    }
-                    else
-                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
+                   xmlParse.changeClient(newClient(client));
+                   sendAnswer = xmlParse.sendId(client);
                 }
                 else
                     sendAnswer = xmlParse.sendStatus(client, 415, "Already exist");
