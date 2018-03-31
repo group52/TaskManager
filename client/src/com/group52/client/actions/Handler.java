@@ -47,15 +47,15 @@ public class Handler {
         String status = XMLParse.getStatusFromXML(s);
         if (code == 400 || code == 401 || code == 404 || code == 405 || code == 415 || code == 500)
             throw new ServerException(status);
+        else mainPanel.displayMessage(status);
         return s;
     }
 
     /**
      * method for update TaskList
-     * @throws IOException if we have input/output mistake
      * @throws JAXBException if JAXB parser has a problem
      */
-    private void updateTaskList () throws IOException, JAXBException {
+    private void updateTaskList () throws JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
             String s = serverDialog.getResponseFromServer();
             if (XMLParse.getActionFromXML(s).equals("view"))
@@ -63,19 +63,6 @@ public class Handler {
 
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
             s = serverDialog.getResponseFromServer();
-            //for testing
-            /*
-            s = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-                    "<socket>\n" +
-                    "    <client login=\"Roman\" password=\"1987004225\">\n" +
-                    "        <session_id>813821921</session_id>\n" +
-                    "    </client>\n" +
-                    "    <action>notification</action>\n" +
-                    "    <code>200</code>\n" +
-                    "    <status>Ok</status>\n" +
-                    "    <task title=\"Task12\" time=\"1522270320000\" start=\"1521317976556\" end=\"1521317976556\" interval=\"0\" active=\"true\"/>\n" +
-                    "</socket>    ";
-            */
             if (XMLParse.getActionFromXML(s).equals("notification"))
                 notificator.setTaskList(XMLParse.getTasks(s));
     }
@@ -137,22 +124,16 @@ public class Handler {
                     String login = signUpForm.getLogin();
                     String password = signUpForm.getPassword();
                     String repeatedPassword = signUpForm.getRepeatedPassword();
-
                     if (!password.equals(repeatedPassword))
                         throw new IOException("Passwords don't match");
                     else XMLParse.createClient(login, password, 0);
-
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("oneMoreUser"));
+
                     String response = getResponseFromServer();
-                    int code = XMLParse.getCodeFromXML(response);
-                    String status = XMLParse.getStatusFromXML(response);
-                    if(code == 200 || code == 201 || code == 202) {
-                        mainPanel.displayMessage(status);
-                        XMLParse.setId(XMLParse.getUserIdFromXML(response));
-                        signUpForm.close();
-                        welcomeForm.close();
-                        mainPanel.open();
-                    }
+                    XMLParse.setId(XMLParse.getUserIdFromXML(response));
+                    signUpForm.close();
+                    welcomeForm.close();
+                    mainPanel.open();
                 }
 
                 if (event.getSource().equals(signInForm.confirmButton)) {
@@ -162,16 +143,11 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("user"));
 
                     String response = getResponseFromServer();
-                    int code = XMLParse.getCodeFromXML(response);
-                    String status = XMLParse.getStatusFromXML(response);
-                    if(code == 200 || code == 201 || code == 202) {
-                        mainPanel.displayMessage(status);
-                        XMLParse.setId(XMLParse.getUserIdFromXML(response));
-                        signInForm.close();
-                        welcomeForm.close();
-                        updateTaskList();
-                        mainPanel.open();
-                    }
+                    XMLParse.setId(XMLParse.getUserIdFromXML(response));
+                    signInForm.close();
+                    welcomeForm.close();
+                    updateTaskList();
+                    mainPanel.open();
                 }
                 if (event.getSource().equals(unrepeatableTaskForm.unrepeatableTaskButton)) {
                     String title = unrepeatableTaskForm.getTitle();
@@ -180,6 +156,7 @@ public class Handler {
                     boolean active = unrepeatableTaskForm.activeBox.isSelected();
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add",
                             title, description, time, 0, 0, 0, active));
+
                     updateTaskList();
                     unrepeatableTaskForm.close();
                 }
@@ -195,6 +172,7 @@ public class Handler {
                     boolean active = repeatableTaskForm.activeBox.isSelected();
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add",
                             title, description, 0, start, end, interval, active));
+
                     updateTaskList();
                     repeatableTaskForm.close();
                 }
@@ -217,6 +195,7 @@ public class Handler {
                         throw new IOException("Start can't be after end");
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("edit",
                             oldTask, title, description, time, start, end, interval, active));
+
                     updateTaskList();
                     editTaskForm.close();
                 }
@@ -224,19 +203,17 @@ public class Handler {
                 if (event.getSource().equals(deleteTaskForm.deleteTaskButton)) {
                     XMLParse.Task task = (XMLParse.Task) deleteTaskForm.comboBox.getModel().getSelectedItem();
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("delete", task));
+
                     updateTaskList();
                     deleteTaskForm.close();
                 }
 
                 if (event.getSource().equals(notificationForm.postponeTaskButton)) {
                     XMLParse.Task task = notificator.getTaskToPostpone();
-                    long time = 0;
-                    long start = 0;
-                    if (task.getInterval() == 0)  time = task.getTime() + 300000;
-                    else start = task.getStart() + 300000;
-                    serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("edit",
-                            task, task.getTitle(), task.getDescription(), time,
-                            start, task.getEnd(), task.getInterval(), task.isActive()));
+                    long time = task.getTime() + 300000;
+                    serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add", task.getTitle(),
+                            task.getDescription(), time, 0, 0, 0, task.isActive()));
+
                     updateTaskList();
                     notificationForm.close();
                 }
@@ -258,12 +235,15 @@ public class Handler {
 
                 if (event.getSource().equals(mainPanel.editTaskFormButton)) {
                     editTasksToComboBox(editTaskForm.comboBox);
+                    XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getElementAt(0);
+                    editTaskForm.addTaskInfo(task.getTitle(), task.getDescription());
                     editTaskForm.open();
                 }
                 if (event.getSource().equals(editTaskForm.cancelButton)) editTaskForm.close();
 
                 if (event.getSource().equals(editTaskForm.comboBox)) {
                     XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getSelectedItem();
+                    editTaskForm.addTaskInfo(task.getTitle(), task.getDescription());
                     if (task.getInterval() == 0) editTaskForm.removeRepeatableFields();
                     else editTaskForm.addRepeatableFields();
                 }
@@ -282,7 +262,6 @@ public class Handler {
                     serverDialog.close();
                     mainPanel.setVisible(false);
                     mainPanel.dispose();
-                    //System.exit(0);
                     Main.main(new String[]{});
                 }
             } catch (JAXBException jaxb) {
@@ -292,10 +271,10 @@ public class Handler {
                 mainPanel.displayErrorMessage(se.getMessage());
                 log.error("Server exception" + se);
             } catch (IllegalArgumentException iae) {
-                mainPanel.displayErrorMessage("IllegalArgumentException: " + iae.getMessage());
+                mainPanel.displayErrorMessage(iae.getMessage());
                 log.error("IllegalArgumentException: ", iae);
             } catch (NullPointerException npe) {
-                mainPanel.displayErrorMessage("NullPointerException: " + npe.getMessage());
+                mainPanel.displayErrorMessage(npe.getMessage());
                 log.error("NullPointerException: ", npe);
             } catch (IndexOutOfBoundsException ioe) {
                 mainPanel.displayErrorMessage("IndexOutOfBoundsException");

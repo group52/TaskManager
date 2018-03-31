@@ -46,12 +46,16 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
     public JCheckBox activeBox = new JCheckBox("is Active");
     public JComboBox comboBox = new JComboBox();
 
-    //private  SpinnerNumberModel hoursModel = new SpinnerNumberModel(8, 1, 24, 1);
-    //private  SpinnerNumberModel minutesModel = new SpinnerNumberModel(8, 1, 60, 1);
-    protected JSpinner startHoursSpinner = new JSpinner();
-    protected JSpinner endHoursSpinner = new JSpinner();
-    protected JSpinner startMinutesSpinner = new JSpinner();
-    protected JSpinner endMinutesSpinner = new JSpinner();
+    private  SpinnerNumberModel hoursModel = new SpinnerNumberModel(8, 1, 24, 1);
+    private  SpinnerNumberModel minutesModel = new SpinnerNumberModel(8, 1, 60, 1);
+    protected JSpinner startHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
+            24, 1));
+    protected JSpinner endHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
+            24, 1));
+    protected JSpinner startMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
+            60, 1));
+    protected JSpinner endMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
+            60, 1));
 
     /**
      * empty constructor for create main panel
@@ -142,10 +146,10 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
     protected void flushFields() {
         titleField.setText("");
         descriptionField.setText("");
-        startHoursSpinner.setValue(0);
-        endHoursSpinner.setValue(0);
-        startMinutesSpinner.setValue(0);
-        endMinutesSpinner.setValue(0);
+        startHoursSpinner.setValue(1);
+        endHoursSpinner.setValue(1);
+        startMinutesSpinner.setValue(1);
+        endMinutesSpinner.setValue(1);
     }
 
     /**

@@ -119,9 +119,12 @@ public class AddTaskForm extends MainPanel implements Listenable {
     /**
      * method where we get interval of task
      * @throws IllegalArgumentException if interval < 0
+     * @throws NullPointerException if interval field is empty
      * @return end interval
      */
-    public int getInterval() throws IllegalArgumentException {
+    public int getInterval() throws IllegalArgumentException, NullPointerException {
+        if (intervalField.getText().isEmpty())
+            throw new NullPointerException("Interval field is empty");
         int interval = Integer.parseInt(intervalField.getText());
         if (interval < 0)
             throw new IllegalArgumentException("Interval can not be less than zero");
