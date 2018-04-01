@@ -1,8 +1,5 @@
 package model;
 
-import model.ArrayTaskList;
-import model.Task;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -28,7 +25,7 @@ public class Helper {
         ArrayTaskList tempUserTaskList = name.getArrayList();
         tempUserTaskList.add(task);
         name.setArrayList(tempUserTaskList);
-        marshalUsers(name);
+        addClientToStorage(name);
         return true;
     }
 
@@ -42,7 +39,7 @@ public class Helper {
         ArrayTaskList tempUserTaskList = name.getArrayList();
         tempUserTaskList.remove(task);
         name.setArrayList(tempUserTaskList);
-        marshalUsers(name);
+        addClientToStorage(name);
         return true;
     }
 
@@ -92,25 +89,27 @@ public class Helper {
 
     public File findUser(String name){
         //make directory
-        String root = File.listRoots()[0].getAbsolutePath();
-        File directory = new File(root);
         if (!directory.exists()){
             directory.mkdir();
         }
         File allfiles [] = directory.listFiles();
-        for (int i = 0; i < allfiles.length; i++){
-          if ( allfiles[i].getName().contains(name)){
-              return allfiles[i];
+        for (File tempFile:allfiles){
+            String newName =  stripExtension(tempFile.getName());
+          if ( newName.equals(name)){
+              return tempFile;
           }
         }
-        File newFileUser = new File(name + ".xml");
 
-        return newFileUser;
+        return null;
     }
 
-    public void marshalUsers(Client client ){
+    public void addClientToStorage(Client client){
+        File userFile = new File("Clientstorage" + "\\" + client.getLogin() + ".xml");
+        marshalUsers(client,userFile);
+    }
+
+    private void marshalUsers(Client client,File userFile ){
         try {
-            File userFile =  this.findUser(client.getLogin());
             JAXBContext parser = JAXBContext.newInstance(Client.class);
             Marshaller marshaller = parser.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,true);
@@ -122,29 +121,62 @@ public class Helper {
 
     }
 
-    public Client unMarshalUsers(String name){
+    public Client getClientFromStorage(String name){
         try {
             File userFile =  this.findUser(name);
-            JAXBContext parser = JAXBContext.newInstance(Client.class);
-            Unmarshaller unmarshaller = parser.createUnmarshaller();
-            Client tempstorage =(Client) unmarshaller.unmarshal(userFile);
-           return tempstorage;
-
+            if (userFile != null) {
+                JAXBContext parser = JAXBContext.newInstance(Client.class);
+                Unmarshaller unmarshaller = parser.createUnmarshaller();
+                Client tempstorage = (Client) unmarshaller.unmarshal(userFile);
+                return tempstorage;
+            }
         } catch (JAXBException e) {
             e.printStackTrace();
         }
         return null;
     }
-    public boolean autorisation (String login, String password){
-        if (login == null && password == null){
-          return false;
+    public boolean autorisation (Client client){
+        if (client==null){
+            return false;
         }
-        Client tempUser = this.unMarshalUsers(login);
-        if (password.equals(tempUser.getPassword())){
+
+        Client tempUser = this.getClientFromStorage(client.getLogin());
+        if (tempUser == null){
+            return false;
+        }
+         else if (client.getPassword().equals(tempUser.getPassword())){
             return true;
         }
         else
             return false;
+    }
+
+    public boolean isClientExist(Client client){
+
+        if (client == null){
+            return false;
+        }
+        if (!directory.exists()){
+            directory.mkdir();
+        }
+        File allfiles [] = directory.listFiles();
+        if (allfiles == null){
+            return false;
+        }
+        for (int i = 0; i < allfiles.length; i++){
+       String newName =  stripExtension(allfiles[i].getName());
+            if ( newName.equals(client.getLogin())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+   private  String stripExtension (String str) {
+        if (str == null) return null;
+        int pos = str.lastIndexOf(".");
+        if (pos == -1) return str;
+        return str.substring(0, pos);
     }
 }
 
