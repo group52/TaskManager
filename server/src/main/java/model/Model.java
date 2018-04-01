@@ -64,7 +64,6 @@ public class Model {
      @param s is the string from the client
      @return sendFile is the file to send to the client */
     public String doWork(String s) {
-        Helper helper = new Helper();
 
         log.info("get xml model" + s);
         String sendAnswer;
@@ -73,33 +72,29 @@ public class Model {
         Client client = xmlParse.getClient(s);
         File clientFile = new File("xml/" + client.getLogin() + ".xml");
 
+        System.out.println(status);
         switch (status) {
             case 'o':   // "oneMoreUser"
-                if (!helper.isClientExist(client)) {
-                  // xmlParse.changeClient(newClient(client));
-                   helper.addClientToStorage(client);
+                if (!xmlParse.findLogin(client)) {
+                   xmlParse.changeClient(newClient(client));
                    sendAnswer = xmlParse.sendId(client);
                 }
                 else
                     sendAnswer = xmlParse.sendStatus(client, 415, "Already exist");
                 break;
             case 'u': // "user"
-                if (helper.autorisation(client)) {
-                    Client clientUser = helper.getClientFromStorage(client.getLogin());
+                if (getAvtorization(client)) {
+                    Client clientUser = xmlParse.getClient(clientFile);
                     clientUser.setId(client.getId());
-                    //xmlParse.changeClient(clientUser);
+                    xmlParse.changeClient(clientUser);
                     sendAnswer = xmlParse.sendId(clientUser);
                 } else
                     sendAnswer = xmlParse.sendStatus(client,404, "Not Found");
                 break;
             case 'n': // "notification"
-                if (helper.autorisation(client)) {
-                    Client clientNotification = helper.getClientFromStorage(client.getLogin());
-                    if (clientNotification.getArrayList().size()> 0) {
-                        sendAnswer = xmlParse.sendTasksByTime(clientNotification);
-                    }
-                    else
-                        sendAnswer = xmlParse.sendStatus(client,200, "No tasks");
+                if (checkAvtorization(client)) {
+                    Client clientNotification = xmlParse.getClient(clientFile);
+                    sendAnswer = xmlParse.sendTasksByTime(clientNotification);
                 }
                 else
                     sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
@@ -113,12 +108,10 @@ public class Model {
                     sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
                 break;
             case 'a': // "add"
-                if (helper.autorisation(client)) {
-                    Client clientAdd = helper.getClientFromStorage(client.getLogin());
-                  Task addedTask =  client.getArrayList().getTask(0);
-                    if (helper.addTaskByUser(client,addedTask)) {
+                if (checkAvtorization(client)) {
+                    Client clientAdd = xmlParse.getClient(clientFile);
+                    if (workAdd(clientAdd, xmlParse.getAddTask(s)))
                         sendAnswer = xmlParse.sendStatus(clientAdd, 201, "Created");
-                    }
                     else
                         sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
                 }

@@ -55,6 +55,7 @@ public class ServerDialog {
             log.error("InputOutput exception: ", ioe);
             close();
         }
+        System.out.println(messageFromStream);
         return messageFromStream;
     }
 

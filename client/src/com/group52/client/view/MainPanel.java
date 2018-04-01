@@ -46,16 +46,10 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
     public JCheckBox activeBox = new JCheckBox("is Active");
     public JComboBox comboBox = new JComboBox();
 
-    private  SpinnerNumberModel hoursModel = new SpinnerNumberModel(8, 1, 24, 1);
-    private  SpinnerNumberModel minutesModel = new SpinnerNumberModel(8, 1, 60, 1);
-    protected JSpinner startHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
-            24, 1));
-    protected JSpinner endHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
-            24, 1));
-    protected JSpinner startMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
-            60, 1));
-    protected JSpinner endMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1,
-            60, 1));
+    protected JSpinner startHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 24, 1));
+    protected JSpinner endHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 24, 1));
+    protected JSpinner startMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 60, 1));
+    protected JSpinner endMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 60, 1));
 
     /**
      * empty constructor for create main panel

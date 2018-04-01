@@ -157,6 +157,7 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add",
                             title, description, time, 0, 0, 0, active));
 
+                    getResponseFromServer();
                     updateTaskList();
                     unrepeatableTaskForm.close();
                 }
@@ -173,6 +174,7 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add",
                             title, description, 0, start, end, interval, active));
 
+                    getResponseFromServer();
                     updateTaskList();
                     repeatableTaskForm.close();
                 }
@@ -196,6 +198,7 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("edit",
                             oldTask, title, description, time, start, end, interval, active));
 
+                    getResponseFromServer();
                     updateTaskList();
                     editTaskForm.close();
                 }
@@ -204,6 +207,7 @@ public class Handler {
                     XMLParse.Task task = (XMLParse.Task) deleteTaskForm.comboBox.getModel().getSelectedItem();
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("delete", task));
 
+                    getResponseFromServer();
                     updateTaskList();
                     deleteTaskForm.close();
                 }
@@ -214,6 +218,7 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add", task.getTitle(),
                             task.getDescription(), time, 0, 0, 0, task.isActive()));
 
+                    getResponseFromServer();
                     updateTaskList();
                     notificationForm.close();
                 }

@@ -3,19 +3,11 @@ package model;
  import java.util.NoSuchElementException;
  import org.apache.log4j.Logger;
 
- import javax.xml.bind.annotation.XmlAccessType;
- import javax.xml.bind.annotation.XmlAccessorType;
- import javax.xml.bind.annotation.XmlElement;
- import javax.xml.bind.annotation.XmlRootElement;
-
 /** The list of task as array*/
-@XmlRootElement(name = "ArrayTaskList")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ArrayTaskList extends TaskList {
 
     private static final Logger log = Logger.getLogger(ArrayTaskList.class);
-
-    @XmlElement(name = "Task")
+    
     protected Task[] arrayTask = new Task[10];
     private int realSize = 0;
     
