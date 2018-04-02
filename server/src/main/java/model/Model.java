@@ -72,7 +72,6 @@ public class Model {
         Client client = xmlParse.getClient(s);
         File clientFile = new File("xml/" + client.getLogin() + ".xml");
 
-        System.out.println(status);
         switch (status) {
             case 'o':   // "oneMoreUser"
                 if (!xmlParse.findLogin(client)) {
