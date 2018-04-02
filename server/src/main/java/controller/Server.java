@@ -41,9 +41,12 @@ public class Server extends Thread {
                 if (!ask.equals("")) {
                     sendFile(out, model.doWork(ask));
                     activeClient = model.activeClient(ask);
+                    sleep(500);
                 }
             }            
         } catch(IOException e) {
+            log.error(e.getMessage());
+        } catch (InterruptedException e) {
             log.error(e.getMessage());
         } finally {
             try {

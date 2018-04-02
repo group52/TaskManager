@@ -698,15 +698,16 @@ public class XMLParse {
 
         Task clientTask;
 
-        for (TaskClient task : socket.getTasks()) {
-            if (task.getInterval() == 0)
-                clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
-            else
-                clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+        if (socket.getTasks().size() > 0)
+            for (TaskClient task : socket.getTasks()) {
+                if (task.getInterval() == 0)
+                    clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
+                else
+                    clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
 
-            clientTask.setActive(task.isActive());
-            tasks.add(clientTask);
-        }
+                clientTask.setActive(task.isActive());
+                tasks.add(clientTask);
+            }
         return new Client(client.getLogin(), client.getPassword(), client.getId(), tasks);
 
     }
@@ -748,15 +749,16 @@ public class XMLParse {
 
         Task clientTask;
 
-        for (XMLParse.TaskClient task : socket.getTasks()) {
-            if (task.getInterval() == 0)
-                clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
-            else
-                clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+        if (socket.getTasks().size() > 0)
+            for (XMLParse.TaskClient task : socket.getTasks()) {
+                if (task.getInterval() == 0)
+                    clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
+                else
+                    clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
 
-            clientTask.setActive(task.isActive());
-            tasks.add(clientTask);
-        }
+                clientTask.setActive(task.isActive());
+                tasks.add(clientTask);
+            }
 
         client = new Client(serverClient.getLogin(), serverClient.getPassword(), serverClient.getId(), tasks);
 
@@ -799,15 +801,16 @@ public class XMLParse {
         ArrayTaskList tasks = new ArrayTaskList();
         Task clientTask;
 
-        for (TaskClient task : socket.getTasks()) {
-            if (task.getInterval() == 0)
-                clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
-            else
-                clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
+        if (socket.getTasks().size() > 0)
+            for (TaskClient task : socket.getTasks()) {
+                if (task.getInterval() == 0)
+                    clientTask = new Task(task.getTitle(),task.getTime(),task.getDescription());
+                else
+                    clientTask = new Task(task.getTitle(),task.getStart(),task.getEnd(),task.getInterval(),task.getDescription());
 
-            clientTask.setActive(task.isActive());
-            tasks.add(clientTask);
-        }
+                clientTask.setActive(task.isActive());
+                tasks.add(clientTask);
+            }
 
         return tasks.getTask(0);
 
@@ -843,9 +846,11 @@ public class XMLParse {
 
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
         XMLParse.Socket socket = new XMLParse.Socket(serverClient, "view", 200, "Ok");
-        for (Task task : client.getArrayList()) {
-            socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
-        }
+
+        if (client.getArrayList().size() > 0)
+            for (Task task : client.getArrayList()) {
+                socket.addTask(new XMLParse.TaskClient(task.getTitle(),task.getTime(),task.getStartTime(),task.getEndTime(),task.getRepeatInterval(),task.isActive(),task.getDescription()));
+            }
 
         return outParse(socket);
 
@@ -883,20 +888,36 @@ public class XMLParse {
 
         ServerClient serverClient = new ServerClient(client.getLogin(),client.getPassword(),client.getId());
         Socket socket = new Socket(serverClient, "notification", 200, "Ok");
+        final long hour = 86400000/24;
         final long day = 86400000;
 
         Date realTime = new Date(System.currentTimeMillis());
-        Date realTimeNextDay = new Date(System.currentTimeMillis() + day);
-        SortedMap<Date, Set<Task>> sortedMap =
-                Tasks.calendar(client.getArrayList(), realTime, realTimeNextDay);
-        for(SortedMap.Entry<Date, Set<Task>> entry : sortedMap.entrySet()) {
-            Date key = entry.getKey();
-            Set<Task> value = entry.getValue();
+        Date realTimeNextHour = new Date(System.currentTimeMillis() + hour);
 
-            for (Task task : value) {
-                if (task.isActive())
-                    socket.addTask(new TaskClient(task.getTitle(),key.getTime(),key.getTime(),key.getTime(),0,task.isActive(),task.getDescription()));
+        int numberTask = 0;
+        if (client.getArrayList().size() > 0) {
+            SortedMap<Date, Set<Task>> sortedMap =
+                    Tasks.calendar(client.getArrayList(), realTime, realTimeNextHour);
+
+            if (sortedMap.size() == 0) {
+                Date realTimeNextDay = new Date(System.currentTimeMillis() + day);
+                sortedMap = Tasks.calendar(client.getArrayList(), realTime, realTimeNextDay);
             }
+
+            if (sortedMap.size() != 0)
+                for (SortedMap.Entry<Date, Set<Task>> entry : sortedMap.entrySet()) {
+                    Date key = entry.getKey();
+                    Set<Task> value = entry.getValue();
+
+                    for (Task task : value) {
+                        if (task.isActive()) {
+                            socket.addTask(new TaskClient(task.getTitle(), key.getTime(), key.getTime(), key.getTime(), 0, task.isActive(), task.getDescription()));
+                            numberTask += 1;
+                            if (numberTask >= 10)
+                                return outParse(socket);
+                        }
+                    }
+                }
         }
 
         return outParse(socket);
