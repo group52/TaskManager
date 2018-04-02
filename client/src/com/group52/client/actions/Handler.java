@@ -63,8 +63,10 @@ public class Handler {
 
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
             s = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML(s).equals("notification") && XMLParse.getTasks(s) != null)
+            if (XMLParse.getActionFromXML(s).equals("notification")){
                 notificator.setTaskList(XMLParse.getTasks(s));
+        }
+
     }
 
     /**
