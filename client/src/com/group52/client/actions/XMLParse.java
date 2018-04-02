@@ -481,6 +481,8 @@ public class XMLParse {
      */
     public static List<Task> getTasks(String s) throws JAXBException {
         XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(new StringReader(s));
-        return new ArrayList<>(socket.getTasks());
+        List<Task> tasks = null;
+        if (socket.getTasks() != null) tasks = socket.getTasks();
+        return tasks;
     }
 }
