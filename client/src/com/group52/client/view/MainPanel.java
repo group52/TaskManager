@@ -48,8 +48,8 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
 
     protected JSpinner startHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 24, 1));
     protected JSpinner endHoursSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 24, 1));
-    protected JSpinner startMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 60, 1));
-    protected JSpinner endMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 60, 1));
+    protected JSpinner startMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 0, 60, 1));
+    protected JSpinner endMinutesSpinner = new JSpinner(new SpinnerNumberModel(8, 0, 60, 1));
 
     /**
      * empty constructor for create main panel
@@ -142,8 +142,8 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
         descriptionField.setText("");
         startHoursSpinner.setValue(1);
         endHoursSpinner.setValue(1);
-        startMinutesSpinner.setValue(1);
-        endMinutesSpinner.setValue(1);
+        startMinutesSpinner.setValue(0);
+        endMinutesSpinner.setValue(0);
     }
 
     /**

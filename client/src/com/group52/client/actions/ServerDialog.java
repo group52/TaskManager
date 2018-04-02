@@ -22,7 +22,6 @@ public class ServerDialog {
     public ServerDialog(String serverAddress)  {
         try {
             socket = new Socket(serverAddress, 7002);
-           // socket = new Socket("127.0.0.1", 7002);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException ioe) {

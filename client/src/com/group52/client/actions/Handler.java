@@ -270,6 +270,7 @@ public class Handler {
                     log.info("Logout");
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
                     serverDialog.close();
+                    notificator.setWork(false);
                     mainPanel.setVisible(false);
                     mainPanel.dispose();
                     Main.main(new String[]{});

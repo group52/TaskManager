@@ -17,6 +17,7 @@ public class Main {
         log.info("Start");
 
         Notificator notificator = new Notificator();
+        notificator.setWork(true);
         Thread notificationThread = new Thread(notificator);
         notificationThread.start();
 

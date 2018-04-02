@@ -12,10 +12,11 @@ public class Notificator extends Thread {
     private NotificationForm notificationForm;
     private List<XMLParse.Task> taskList = new ArrayList<>();
     private XMLParse.Task taskToPostpone = new XMLParse.Task();
+    private boolean doWork;
 
     @Override
     public void run() {
-        while (true) {
+        while (doWork) {
             long curTime = System.currentTimeMillis();
             if (taskList != null) {
                 for (XMLParse.Task task : taskList) {
@@ -79,4 +80,13 @@ public class Notificator extends Thread {
     public void setNotificationForm(NotificationForm notificationForm) {
         this.notificationForm = notificationForm;
     }
+
+    /**
+     * method where we set work threads's status
+     * @param doWork is boolean value(true or false)
+     */
+    public void setWork(boolean doWork) {
+        this.doWork = doWork;
+    }
+
 }
