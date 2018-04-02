@@ -50,12 +50,11 @@ public class ServerDialog {
         try {
             messageFromStream = in.readLine();
             log.debug("get xml: " + messageFromStream);
-            if (messageFromStream == null) log.info("got null response");
+            if (messageFromStream == null) log.debug("got null response");
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
             close();
         }
-        System.out.println(messageFromStream);
         return messageFromStream;
     }
 

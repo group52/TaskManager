@@ -144,9 +144,9 @@ public class Handler {
 
                     String response = getResponseFromServer();
                     XMLParse.setId(XMLParse.getUserIdFromXML(response));
+                    updateTaskList();
                     signInForm.close();
                     welcomeForm.close();
-                    updateTaskList();
                     mainPanel.open();
                 }
                 if (event.getSource().equals(unrepeatableTaskForm.unrepeatableTaskButton)) {

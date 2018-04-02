@@ -464,8 +464,11 @@ public class XMLParse {
         XMLParse.Socket socket = (XMLParse.Socket) createUnmarshaller().unmarshal(new StringReader(s));
         List<XMLParse.Task> tasks = socket.getTasks();
         StringBuilder sb = new StringBuilder();
-        for (XMLParse.Task task: tasks) {
-            sb.append(task.toString());
+        if (tasks == null) sb.append("No tasks");
+        else {
+            for (XMLParse.Task task : tasks) {
+                sb.append(task.toString());
+            }
         }
         return sb.toString();
     }
