@@ -281,7 +281,7 @@ public class XMLParse {
             else {
                 sb.append(" start: " + new Date(getStart()));
                 sb.append(" end: " + new Date(getEnd()));
-                sb.append(" interval: " + getInterval());
+                sb.append(" interval: " + getInterval()/1000);
             }
             if (isActive()) sb.append(" (active) ");
 
@@ -302,8 +302,6 @@ public class XMLParse {
         JAXBContext context = JAXBContext.newInstance(XMLParse.Socket.class);
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        /*marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders",
-                "\n<!DOCTYPE socket SYSTEM  \"client.dtd\">");*/
         return marshaller;
     }
 
@@ -315,7 +313,6 @@ public class XMLParse {
     private static Unmarshaller createUnmarshaller() throws JAXBException {
         JAXBContext context = JAXBContext.newInstance(XMLParse.Socket.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        //unmarshaller.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, Boolean.TRUE);
         return unmarshaller;
     }
 

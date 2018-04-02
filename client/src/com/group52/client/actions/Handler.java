@@ -160,8 +160,8 @@ public class Handler {
                             title, description, time, 0, 0, 0, active));
 
                     getResponseFromServer();
-                    updateTaskList();
                     unrepeatableTaskForm.close();
+                    updateTaskList();
                 }
 
                 if (event.getSource().equals(repeatableTaskForm.repeatableTaskButton)) {
@@ -177,8 +177,8 @@ public class Handler {
                             title, description, 0, start, end, interval, active));
 
                     getResponseFromServer();
-                    updateTaskList();
                     repeatableTaskForm.close();
+                    updateTaskList();
                 }
 
                 if (event.getSource().equals(editTaskForm.editTaskButton)) {
@@ -201,8 +201,8 @@ public class Handler {
                             oldTask, title, description, time, start, end, interval, active));
 
                     getResponseFromServer();
-                    updateTaskList();
                     editTaskForm.close();
+                    updateTaskList();
                 }
 
                 if (event.getSource().equals(deleteTaskForm.deleteTaskButton)) {
@@ -210,8 +210,8 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("delete", task));
 
                     getResponseFromServer();
-                    updateTaskList();
                     deleteTaskForm.close();
+                    updateTaskList();
                 }
 
                 if (event.getSource().equals(notificationForm.postponeTaskButton)) {
@@ -221,8 +221,8 @@ public class Handler {
                             task.getDescription(), time, 0, 0, 0, task.isActive()));
 
                     getResponseFromServer();
-                    updateTaskList();
                     notificationForm.close();
+                    updateTaskList();
                 }
 
                 if (event.getSource().equals(mainPanel.calendarFormButton)) {
@@ -261,7 +261,10 @@ public class Handler {
                 }
                 if (event.getSource().equals(deleteTaskForm.cancelButton)) deleteTaskForm.close();
 
-                if (event.getSource().equals(notificationForm.closeTaskButton)) notificationForm.close();
+                if (event.getSource().equals(notificationForm.closeTaskButton)) {
+                    notificationForm.close();
+                    updateTaskList();
+                }
 
                 if (event.getSource().equals(mainPanel.exitButton)) {
                     log.info("Logout");
