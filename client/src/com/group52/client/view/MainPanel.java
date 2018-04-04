@@ -117,19 +117,6 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
         this.add(mainPanel);
     }
 
-    /**
-     * method where we get server address
-     * @return server address
-     */
-    public String getServerAddress() {
-        return JOptionPane.showInputDialog(
-                new JFrame("IP Address"),
-                "Enter IP Address of the Server:",
-                "Welcome to the Task Manager",
-                JOptionPane.QUESTION_MESSAGE);
-    }
-
-
     public void showTaskList(String taskList) {
         tasksField.setText(taskList);
     }
