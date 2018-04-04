@@ -39,7 +39,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>                            
                             <classpathPrefix>dependency-jars/</classpathPrefix>                        
-                            <mainClass>MultiServer</mainClass>
+                            <mainClass>controller.MultiServer</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
