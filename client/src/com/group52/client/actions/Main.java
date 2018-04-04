@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Scanner;
 
 /**
  * class Main with start method "void main"
@@ -26,7 +28,8 @@ public class Main {
         notificationThread.start();
 
         MainPanel mainPanel = new MainPanel();
-        String ip = null; //ip here will be read from file in future release
+
+        String ip = readIPFromFile();
         if (ip != null) {
             new Handler(mainPanel, new ServerDialog(ip), notificator);
         } else {
@@ -39,18 +42,44 @@ public class Main {
                         if (event.getSource().equals(ipAddress.okButton)) {
                             ipAddress.readServerIP();
                             ipAddress.close();
-                            new Handler(mainPanel, new ServerDialog(ipAddress.getIp()), notificator);
+                            String ip = ipAddress.getIp();
+                            writeIPToFile(ip);
+                            new Handler(mainPanel, new ServerDialog(ip), notificator);
                         }
                         if (event.getSource().equals(ipAddress.quitButton)) {
                             log.info("Quit");
                             System.exit(1);
                         }
-                    } catch (IllegalArgumentException iae) {
-                        mainPanel.displayErrorMessage(iae.getMessage());
-                        log.error("IllegalArgumentException: ", iae);
+                    } catch (NullPointerException npe) {
+                        mainPanel.displayErrorMessage(npe.getMessage());
+                        log.error(npe);
                     }
                 }
             });
+        }
+    }
+
+    private static String readIPFromFile() {
+        String ip = null;
+        Scanner in = null;
+        try {
+            in = new Scanner(new FileReader("ip.txt"));
+            while(in.hasNext()) {
+                ip = in.next();
+            }
+            in.close();
+        } catch (FileNotFoundException e) {
+            log.error(e);
+            new File("ip.txt");
+        }
+        return ip;
+    }
+
+    public static void writeIPToFile(String ip) {
+        try (FileWriter writer = new FileWriter("ip.txt")){
+            writer.write(ip);
+        } catch (IOException e) {
+            log.error(e);
         }
     }
 }

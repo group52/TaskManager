@@ -11,6 +11,7 @@ import java.net.URL;
 public class WelcomeForm implements Listenable, Closeable {
     public JButton signUpButton = new JButton("sign up");
     public JButton signInButton = new JButton("sign in");
+    public JButton ipButton = new JButton("Change server IP address");
     private JFrame frame;
 
     /**
@@ -19,7 +20,7 @@ public class WelcomeForm implements Listenable, Closeable {
      */
     public WelcomeForm() {
         frame = new JFrame("Welcome form");
-        frame.setSize(300, 200);
+        frame.setSize(300, 260);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -37,8 +38,10 @@ public class WelcomeForm implements Listenable, Closeable {
 
         signUpButton.setBounds(20,120,120,40);
         signInButton.setBounds(160,120,120,40);
+        ipButton.setBounds(20,170,260,40);
         frame.add(signUpButton);
         frame.add(signInButton);
+        frame.add(ipButton);
         frame.setVisible(true);
     }
 
@@ -56,5 +59,6 @@ public class WelcomeForm implements Listenable, Closeable {
     public void addListener(ActionListener actionListener) {
         signInButton.addActionListener(actionListener);
         signUpButton.addActionListener(actionListener);
+        ipButton.addActionListener(actionListener);
     }
 }

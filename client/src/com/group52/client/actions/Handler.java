@@ -137,7 +137,6 @@ public class Handler {
                     welcomeForm.close();
                     mainPanel.open();
                 }
-
                 if (event.getSource().equals(signInForm.confirmButton)) {
                     String login = signInForm.getLogin();
                     String password = signInForm.getPassword();
@@ -151,6 +150,16 @@ public class Handler {
                     welcomeForm.close();
                     mainPanel.open();
                 }
+                if (event.getSource().equals(welcomeForm.ipButton)) {
+                    log.info("changing server IP address");
+                    welcomeForm.close();
+                    notificator.setWork(false);
+                    serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
+                    serverDialog.close();
+                    Main.writeIPToFile("");
+                    Main.main(new String[]{});
+                }
+
                 if (event.getSource().equals(unrepeatableTaskForm.unrepeatableTaskButton)) {
                     String title = unrepeatableTaskForm.getTitle();
                     String description = unrepeatableTaskForm.getDescription();
@@ -277,15 +286,15 @@ public class Handler {
                 }
             } catch (JAXBException jaxb) {
                 mainPanel.displayErrorMessage("Parse exception");
-                log.error("JAXBException" + jaxb);
+                log.error("JAXBException: " + jaxb);
             } catch (ServerException se) {
                 mainPanel.displayErrorMessage(se.getMessage());
-                log.error("Server exception" + se);
+                log.error("Server exception: " + se);
             } catch (IllegalArgumentException iae) {
                 mainPanel.displayErrorMessage(iae.getMessage());
                 log.error("IllegalArgumentException: ", iae);
             } catch (NullPointerException npe) {
-                mainPanel.displayErrorMessage(npe.getMessage());
+                mainPanel.displayErrorMessage("NullPointerException: " + npe.getMessage());
                 log.error("NullPointerException: ", npe);
             } catch (IndexOutOfBoundsException ioe) {
                 mainPanel.displayErrorMessage("IndexOutOfBoundsException");

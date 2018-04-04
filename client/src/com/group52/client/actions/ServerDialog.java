@@ -67,7 +67,9 @@ public class ServerDialog {
             socket.close();
         } catch (IOException ioe) {
             log.error("InputOutput exception: ", ioe);
+        } catch (NullPointerException npe) {
+            log.error("NullPointerException: ",npe);
+            Main.writeIPToFile("");
         }
     }
-
 }
