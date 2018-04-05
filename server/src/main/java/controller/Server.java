@@ -31,9 +31,7 @@ public class Server extends Thread {
     /** Main work for each thread */
     public void run()
     {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())))
-        {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             boolean activeClient = true;
             String ask;
@@ -42,30 +40,32 @@ public class Server extends Thread {
 
             if ("".equals(ask)) {
                 activeClient = false;
-                out.close();
                 socket.close();
             }
 
-            while (activeClient) {
+            try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+                while (activeClient) {
 
-                activeClient = activeClient(ask);
+                    activeClient = activeClient(ask);
 
-                if (activeClient) {
-                    sendFile(out, doWork(ask));
-                    sleep(500);
-                    ask = recieveFile(in);
+                    if (activeClient) {
+                        sendFile(out, doWork(ask));
+                        sleep(500);
+                        ask = recieveFile(in);
+                    } else {
+                        socket.close();
+                        break;
+                    }
                 }
-                else {
-                    out.close();
-                    socket.close();
-                    break;
-                }
+            } catch (IOException ioe) {
+                log.error("InputOutput exception: " + ioe);
+            } catch (InterruptedException e) {
+                log.error("InterruptedException: " + e);
             }
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             log.error("InputOutput exception: " + ioe);
-        } catch (InterruptedException e) {
-            log.error("InterruptedException: " + e);
         }
+
     }
 
     /** Send the @param file using some @param OutputStream
