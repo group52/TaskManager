@@ -606,8 +606,6 @@ public class XMLParse {
                     if (serverClient.getLogin().equals(client.getLogin())
                             && serverClient.getPassword().equals(client.getPassword())
                             && serverClient.getId() == client.getId()) {
-                        log.info("client " + serverClient.getLogin() + "client " + client.getLogin() +
-                                serverClient.getPassword() + "client " + client.getPassword() + serverClient.getId() + "client " + client.getId());
                         return true;
                     }
                 }

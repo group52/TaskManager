@@ -17,12 +17,13 @@ public class MultiServer {
         
         try (ServerSocket s = new ServerSocket(PORT)) {
             while (true) {
+
                 Socket socket = s.accept();
+
                 try {
                     new Server(socket);
                 }
                 catch (Exception e) {
-                    socket.close();
                     log.error(e);
                 }
             }

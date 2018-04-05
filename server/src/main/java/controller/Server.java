@@ -31,33 +31,40 @@ public class Server extends Thread {
     /** Main work for each thread */
     public void run()
     {
-        try
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())))
         {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
 
             boolean activeClient = true;
             String ask;
 
+            ask = recieveFile(in);
+
+            if ("".equals(ask)) {
+                activeClient = false;
+                out.close();
+                socket.close();
+            }
+
             while (activeClient) {
-                ask = recieveFile(in);
-                if (!"".equals(ask)) {
+
+                activeClient = activeClient(ask);
+
+                if (activeClient) {
                     sendFile(out, doWork(ask));
-                    activeClient = activeClient(ask);
                     sleep(500);
+                    ask = recieveFile(in);
+                }
+                else {
+                    out.close();
+                    socket.close();
+                    break;
                 }
             }
         } catch(IOException ioe) {
             log.error("InputOutput exception: " + ioe);
         } catch (InterruptedException e) {
             log.error("InterruptedException: " + e);
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException ioe) {
-                log.error("InputOutput exception: " + ioe);
-            }
         }
     }
 
@@ -75,13 +82,14 @@ public class Server extends Thread {
     /** Receive the @return file using some @param InputStream  
     @param input is the input for receive
     @return the String from the client */
-    private String recieveFile(BufferedReader input) {
+    private String recieveFile(BufferedReader input) throws IOException {
 
         String messageFromStream = "";
         try {
             messageFromStream = input.readLine();
             log.debug("get xml" + messageFromStream);
         } catch (IOException ioe) {
+            socket.close();
             log.error("InputOutput exception: " + ioe);
         }
         return messageFromStream;
