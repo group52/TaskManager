@@ -571,22 +571,22 @@ public class XMLParse {
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
-            XMLParse.Server server = new XMLParse.Server();
-            JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
             if (file.isFile()) {
+                JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
                 Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-                server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
-            }
+                XMLParse.Server server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
 
-            List<XMLParse.ServerClient> clientsList = server.getClients();
+                List<XMLParse.ServerClient> clientsList = server.getClients();
 
-            for (XMLParse.ServerClient serverClient : clientsList) {
-                if (serverClient.getLogin().equals(client.getLogin())) {
-                    return true;
+                for (XMLParse.ServerClient serverClient : clientsList) {
+                    if (serverClient.getLogin().equals(client.getLogin())) {
+                        return true;
+                    }
                 }
             }
-
+            else
+                return false;
 
         } catch (JAXBException e) {
             log.error(e.getMessage());
@@ -607,26 +607,26 @@ public class XMLParse {
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
-            XMLParse.Server server = new XMLParse.Server();
-            JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
             if (file.isFile()) {
+                JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
                 Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
-                server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
-            }
+                XMLParse.Server server = (XMLParse.Server) jaxbUnmarshaller.unmarshal(file);
 
-            List<XMLParse.ServerClient> clientsList = server.getClients();
+                List<XMLParse.ServerClient> clientsList = server.getClients();
 
-            for (XMLParse.ServerClient serverClient : clientsList) {
-                if (serverClient.getLogin().equals(client.getLogin())
-                        && serverClient.getPassword().equals(client.getPassword())
-                        && serverClient.getId() == client.getId()) {
-                    log.info("client " + serverClient.getLogin() + "client " + client.getLogin() +
-                            serverClient.getPassword() + "client " + client.getPassword() + serverClient.getId() + "client " + client.getId());
-                    return true;
+                for (XMLParse.ServerClient serverClient : clientsList) {
+                    if (serverClient.getLogin().equals(client.getLogin())
+                            && serverClient.getPassword().equals(client.getPassword())
+                            && serverClient.getId() == client.getId()) {
+                        log.info("client " + serverClient.getLogin() + "client " + client.getLogin() +
+                                serverClient.getPassword() + "client " + client.getPassword() + serverClient.getId() + "client " + client.getId());
+                        return true;
+                    }
                 }
             }
-
+            else
+                return false;
 
         } catch (JAXBException e) {
             log.error(e.getMessage());
