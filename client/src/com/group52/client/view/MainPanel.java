@@ -113,7 +113,7 @@ public class MainPanel extends JFrame implements Listenable, Closeable {
         mainPanel.setLayout(null);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.add(mainPanel);
     }
 

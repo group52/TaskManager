@@ -2,8 +2,8 @@ package com.group52.client.actions;
 
 import com.group52.client.view.*;
 import com.group52.client.view.Calendar;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
+import java.awt.event.*;
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.util.*;
@@ -23,10 +23,11 @@ public class Handler {
 
     /**
      * creating handler constructor
-     * @see Handler
-     * @param mainPanel is panel with tasks field and buttons
+     *
+     * @param mainPanel    is panel with tasks field and buttons
      * @param serverDialog is socket for send and get xml files
-     * @param notificator is entity for show notification of current tasks
+     * @param notificator  is entity for show notification of current tasks
+     * @see Handler
      */
     public Handler(MainPanel mainPanel, ServerDialog serverDialog, Notificator notificator) {
         this.mainPanel = mainPanel;
@@ -37,9 +38,10 @@ public class Handler {
 
     /**
      * method where we get response from server
-     * @throws ServerException if server has a problem
-     * @throws JAXBException if JAXB parser has a problem
+     *
      * @return file
+     * @throws ServerException if server has a problem
+     * @throws JAXBException   if JAXB parser has a problem
      */
     private String getResponseFromServer() throws IOException, JAXBException {
         String s = serverDialog.getResponseFromServer();
@@ -53,27 +55,29 @@ public class Handler {
 
     /**
      * method for update TaskList
+     *
      * @throws JAXBException if JAXB parser has a problem
      */
-    private void updateTaskList () throws JAXBException {
-            serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
-            String s = serverDialog.getResponseFromServer();
-            if(s!= null) {
-                if ((XMLParse.getActionFromXML(s).equals("view")))
-                    mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
+    private void updateTaskList() throws JAXBException {
+        serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
+        String s = serverDialog.getResponseFromServer();
+        if (s != null) {
+            if ((XMLParse.getActionFromXML(s).equals("view")))
+                mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
 
-                serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
-                s = serverDialog.getResponseFromServer();
-                if (XMLParse.getActionFromXML(s).equals("notification")); {
-                    notificator.setTaskList(XMLParse.getTasks(s));
-                }
+            serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
+            s = serverDialog.getResponseFromServer();
+            if (XMLParse.getActionFromXML(s).equals("notification")) ;
+            {
+                notificator.setTaskList(XMLParse.getTasks(s));
             }
+        }
     }
 
     /**
      * inner class Listener for manage on click actions
      */
-    public class Listener implements ActionListener {
+    public class Listener extends WindowAdapter implements ActionListener {
 
         private SignUpForm signUpForm = new SignUpForm();
         private SignInForm signInForm = new SignInForm();
@@ -86,6 +90,7 @@ public class Handler {
 
         /**
          * constructor without arguments
+         *
          * @see Listener
          */
         public Listener() {
@@ -99,25 +104,29 @@ public class Handler {
             editTaskForm.addListener(listener);
             deleteTaskForm.addListener(listener);
             notificationForm.addListener(listener);
+            mainPanel.addWindowListener(listener);
+            welcomeForm.addWindowListener(listener);
         }
 
         /**
          * method for edit tasks to combo box
+         *
          * @param comboBox is box for choose task
          * @throws ServerException if server has a problem
-         * @throws JAXBException if JAXB parser has a problem
+         * @throws JAXBException   if JAXB parser has a problem
          */
-        private void editTasksToComboBox (JComboBox comboBox) throws IOException, JAXBException {
+        private void editTasksToComboBox(JComboBox comboBox) throws IOException, JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
             List<XMLParse.Task> tasks = XMLParse.getTasks(getResponseFromServer());
             comboBox.removeAllItems();
-            for (XMLParse.Task task: tasks) {
+            for (XMLParse.Task task : tasks) {
                 comboBox.addItem(task);
             }
         }
 
         /**
          * method for responding to a button click
+         *
          * @param event is action event
          */
         public void actionPerformed(ActionEvent event) {
@@ -287,8 +296,7 @@ public class Handler {
                 }
             } catch (JAXBException jaxb) {
                 mainPanel.displayErrorMessage("Parse exception");
-                log.error("JAXBException: " );
-                jaxb.printStackTrace();
+                log.error("JAXBException: " + jaxb);
             } catch (ServerException se) {
                 mainPanel.displayErrorMessage(se.getMessage());
                 log.error("Server exception: " + se);
@@ -310,6 +318,24 @@ public class Handler {
             } catch (Exception ex) {
                 mainPanel.displayErrorMessage(ex.getMessage());
                 log.error("Exception: ", ex);
+            }
+        }
+
+        @Override
+        public void windowClosing(WindowEvent event) {
+            if (WindowEvent.WINDOW_CLOSING == event.getID()) {
+                try {
+                    serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
+                } catch (JAXBException jaxb) {
+                    mainPanel.displayErrorMessage("Parse exception");
+                    log.error("JAXBException: " + jaxb);
+                }
+                log.info("close");
+                serverDialog.close();
+                notificator.setWork(false);
+                mainPanel.setVisible(false);
+                mainPanel.dispose();
+                System.exit(0);
             }
         }
     }

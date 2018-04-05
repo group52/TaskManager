@@ -3,12 +3,13 @@ package com.group52.client.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 import java.net.URL;
 
 /**
  * class WelcomeForm is class for create welcome form
  */
-public class WelcomeForm implements Listenable, Closeable {
+public class WelcomeForm extends MainPanel implements Listenable, Closeable {
     public JButton signUpButton = new JButton("sign up");
     public JButton signInButton = new JButton("sign in");
     public JButton ipButton = new JButton("Change server IP address");
@@ -26,7 +27,7 @@ public class WelcomeForm implements Listenable, Closeable {
         frame.setResizable(false);
         URL iconPath = getClass().getClassLoader().getResource("icon.png");
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(iconPath));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         JLabel img;
         URL imgPath = getClass().getClassLoader().getResource("welcome.png");
@@ -60,5 +61,10 @@ public class WelcomeForm implements Listenable, Closeable {
         signInButton.addActionListener(actionListener);
         signUpButton.addActionListener(actionListener);
         ipButton.addActionListener(actionListener);
+    }
+
+    @Override
+    public synchronized void addWindowListener(WindowListener l) {
+        frame.addWindowListener(l);
     }
 }
