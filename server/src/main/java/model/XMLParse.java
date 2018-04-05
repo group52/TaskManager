@@ -493,9 +493,6 @@ public class XMLParse {
      * @param client is the new client for adding
      */
     public void addClient(Client client) {
-
-        log.info("addClient " + client.getLogin());
-
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -515,7 +512,7 @@ public class XMLParse {
             jaxbMarshaller.marshal(server, new File("xml/" + "controller.xml"));
 
         } catch (JAXBException e) {
-            log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
     }
 
@@ -525,9 +522,6 @@ public class XMLParse {
      * @param client is the client information
      */
     public boolean newSessionClient(Client client) {
-
-        log.info("newSessionClient " + client.getLogin());
-
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -553,9 +547,8 @@ public class XMLParse {
                 }
             }
         } catch (JAXBException e) {
-            log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
-
         return false;
     }
 
@@ -565,9 +558,6 @@ public class XMLParse {
      * @param client is the client information
      */
     public boolean findLogin(Client client) {
-
-        log.info("findLogin " + client.getLogin());
-
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -589,7 +579,7 @@ public class XMLParse {
                 return false;
 
         } catch (JAXBException e) {
-            log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
 
         return false;
@@ -601,9 +591,6 @@ public class XMLParse {
      * @param client is the client information
      */
     public boolean findClient(Client client) {
-
-        log.info("findClient " + client.getLogin());
-
         try {
             String fileName = "xml/" + "controller.xml";
             File file = new File(fileName);
@@ -629,7 +616,7 @@ public class XMLParse {
                 return false;
 
         } catch (JAXBException e) {
-            log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
 
         return false;
@@ -638,9 +625,6 @@ public class XMLParse {
     /**  Change information about the client in "login.xml" on controller side
      @param client is the client information */
     public void changeClient(Client client) {
-
-        log.info("changeClient " + client.getLogin());
-
         try {
             String filename = "xml/" + client.getLogin() + ".xml";
             File file = new File(filename);
@@ -657,7 +641,7 @@ public class XMLParse {
             jaxbMarshaller.marshal(socket,file);
 
         } catch (JAXBException e) {
-        log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
     }
 
@@ -667,7 +651,7 @@ public class XMLParse {
      @return socket information */
     public Socket inParse(String s) {
 
-        log.info("inParse" + s);
+        log.debug("inParse: " + s);
 
         Socket socket = new Socket();
 
@@ -676,11 +660,9 @@ public class XMLParse {
             Unmarshaller jaxbUnmarshaller = jc.createUnmarshaller();
             socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
             return socket;
-
         } catch (JAXBException e) {
-            log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
-
         return socket;
     }
 
@@ -688,9 +670,6 @@ public class XMLParse {
      @param s is the ask file from client
      @return client information */
     public Client getClient(String s) {
-
-        log.info("getClient" + s);
-
         Socket socket = inParse(s);
 
         ServerClient client = socket.getServerClient();
@@ -709,7 +688,6 @@ public class XMLParse {
                 tasks.add(clientTask);
             }
         return new Client(client.getLogin(), client.getPassword(), client.getId(), tasks);
-
     }
 
     /** Ummarshaling the ask from client and give the class Socket
@@ -717,7 +695,7 @@ public class XMLParse {
      @return socket information */
     public Socket inParse(File file) {
 
-        log.info("inParse File" + file.getName());
+        log.debug("inParse File" + file.getName());
 
         Socket socket = new Socket();
 
@@ -728,7 +706,7 @@ public class XMLParse {
             return socket;
 
         } catch (JAXBException e) {
-            log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
 
         return socket;
@@ -739,14 +717,9 @@ public class XMLParse {
      @return client information */
     public Client getClient(File file) {
 
-        log.info("getClient from file" + file.getPath());
-        Client client = new Client();
-
         Socket socket = inParse(file);
-
         ArrayTaskList tasks = new ArrayTaskList();
         ServerClient serverClient = socket.getServerClient();
-
         Task clientTask;
 
         if (socket.getTasks().size() > 0)
@@ -760,11 +733,7 @@ public class XMLParse {
                 tasks.add(clientTask);
             }
 
-        client = new Client(serverClient.getLogin(), serverClient.getPassword(), serverClient.getId(), tasks);
-
-
-
-        return client;
+        return new Client(serverClient.getLogin(), serverClient.getPassword(), serverClient.getId(), tasks);
     }
 
     /** Ummarshaling the ask file from client and give the task list for adding
@@ -813,7 +782,6 @@ public class XMLParse {
             }
 
         return tasks.getTask(0);
-
     }
 
     /** Marshaling the answer file for "autorization" action from client
@@ -833,7 +801,7 @@ public class XMLParse {
             text = sw.toString().replaceAll("\n","");
 
         } catch (JAXBException e) {
-        log.error(e.getMessage());
+            log.error("JAXBException: " + e);
         }
 
         return text;

@@ -47,16 +47,16 @@ public class Server extends Thread {
                     activeClient = activeClient(ask);
                     sleep(500);
                 }
-            }            
-        } catch(IOException e) {
-            log.error(e.getMessage());
+            }
+        } catch(IOException ioe) {
+            log.error("InputOutput exception: " + ioe);
         } catch (InterruptedException e) {
-            log.error(e.getMessage());
+            log.error("InterruptedException: " + e);
         } finally {
             try {
                 socket.close();
-            } catch (IOException e) {
-                log.error(e.getMessage());
+            } catch (IOException ioe) {
+                log.error("InputOutput exception: " + ioe);
             }
         }
     }
@@ -68,7 +68,7 @@ public class Server extends Thread {
 
         s = s.replaceAll("\n","");
         output.println(s);
-        log.info("send xml" + s);
+        log.debug("send xml" + s);
 
     }
     
@@ -80,10 +80,9 @@ public class Server extends Thread {
         String messageFromStream = "";
         try {
             messageFromStream = input.readLine();
-            log.info("get xml" + messageFromStream);
-            if (messageFromStream == null) log.info("got null response");
+            log.debug("get xml" + messageFromStream);
         } catch (IOException ioe) {
-            log.error("InputOutput exception: ", ioe);
+            log.error("InputOutput exception: " + ioe);
         }
         return messageFromStream;
     }
@@ -94,7 +93,6 @@ public class Server extends Thread {
      @return action type for controller work */
     public String getCommandType(String s)
     {
-        log.info("get xml model" + s);
         return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
     }
 
