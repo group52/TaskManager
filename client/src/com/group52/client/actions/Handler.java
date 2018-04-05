@@ -58,15 +58,16 @@ public class Handler {
     private void updateTaskList () throws JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
             String s = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML("view").equals(s))
-            mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
+            if(s!= null) {
+                if ((XMLParse.getActionFromXML(s).equals("view")))
+                    mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
 
-            serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
-            s = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML("notification").equals(s)){
-                notificator.setTaskList(XMLParse.getTasks(s));
-        }
-
+                serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
+                s = serverDialog.getResponseFromServer();
+                if (XMLParse.getActionFromXML(s).equals("notification")); {
+                    notificator.setTaskList(XMLParse.getTasks(s));
+                }
+            }
     }
 
     /**
@@ -286,7 +287,8 @@ public class Handler {
                 }
             } catch (JAXBException jaxb) {
                 mainPanel.displayErrorMessage("Parse exception");
-                log.error("JAXBException: " + jaxb);
+                log.error("JAXBException: " );
+                jaxb.printStackTrace();
             } catch (ServerException se) {
                 mainPanel.displayErrorMessage(se.getMessage());
                 log.error("Server exception: " + se);
