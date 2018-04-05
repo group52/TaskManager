@@ -60,141 +60,90 @@ public class Model {
         return xmlParse.findClient(client);
     }
 
-    /** Check the client "action" from client and do that on controller side
-     @param s is the string from the client
-     @return sendFile is the file to send to the client */
-    public String doWork(String s) {
+    /** Ummarshaling the ask file from client and give the information about client
+     @param s is the ask file from client
+     @return client information */
+    public Client getClient(String s) {
+        return xmlParse.getClient(s);
+    }
 
-        log.info("get xml model" + s);
-        String sendAnswer;
-        char status = getCommandType(s).charAt(0);
-
-        Client client = xmlParse.getClient(s);
+    /** Ummarshaling the ask file from client and give the information about client
+     @param client is the client
+     @return client information */
+    public Client getClientFromFile(Client client) {
         File clientFile = new File("xml/" + client.getLogin() + ".xml");
-
-        switch (status) {
-            case 'o':   // "oneMoreUser"
-                if (!xmlParse.findLogin(client)) {
-                   xmlParse.changeClient(newClient(client));
-                   sendAnswer = xmlParse.sendId(client);
-                }
-                else
-                    sendAnswer = xmlParse.sendStatus(client, 415, "Already exist");
-                break;
-            case 'u': // "user"
-                if (getAvtorization(client)) {
-                    Client clientUser = xmlParse.getClient(clientFile);
-                    clientUser.setId(client.getId());
-                    xmlParse.changeClient(clientUser);
-                    sendAnswer = xmlParse.sendId(clientUser);
-                } else
-                    sendAnswer = xmlParse.sendStatus(client,404, "Not Found");
-                break;
-            case 'n': // "notification"
-                if (checkAvtorization(client)) {
-                    Client clientNotification = xmlParse.getClient(clientFile);
-                    sendAnswer = xmlParse.sendTasksByTime(clientNotification);
-                }
-                else
-                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
-                break;
-            case 'v': // "view"
-                if (checkAvtorization(client)) {
-                    Client clientView = xmlParse.getClient(clientFile);
-                    sendAnswer = xmlParse.sendTasks(clientView);
-                }
-                else
-                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
-                break;
-            case 'a': // "add"
-                if (checkAvtorization(client)) {
-                    Client clientAdd = xmlParse.getClient(clientFile);
-                    if (workAdd(clientAdd, xmlParse.getAddTask(s)))
-                        sendAnswer = xmlParse.sendStatus(clientAdd, 201, "Created");
-                    else
-                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
-                }
-                else
-                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
-                break;
-            case 'e': // "edit"
-                if (checkAvtorization(client)) {
-                    Client clientEdit = xmlParse.getClient(clientFile);
-                    Task task = xmlParse.getDeleteTask(s);
-                    workDelete(clientEdit, task);
-                    ArrayTaskList tasks = xmlParse.getAddTask(s);
-                    tasks.remove(task);
-                    if (workAdd(clientEdit, tasks))
-                        sendAnswer = xmlParse.sendStatus(clientEdit, 202, "Accepted");
-                    else
-                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
-                } else
-                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
-                break;
-            case 'd': // "delete"
-                if (checkAvtorization(client)) {
-                    Client clientDelete = xmlParse.getClient(clientFile);
-                    if (workDelete(clientDelete, xmlParse.getDeleteTask(s)))
-                        sendAnswer = xmlParse.sendStatus(clientDelete, 202, "Accepted");
-                    else
-                        sendAnswer = xmlParse.sendStatus(client, 400, "Bad Request");
-                } else
-                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
-                break;
-            case 'c': // "close"
-                if (checkAvtorization(client)) {
-                    client.setId((int) System.currentTimeMillis());
-                    if (xmlParse.newSessionClient(client))
-                        sendAnswer = xmlParse.sendStatus(client,200, "OK");
-                    else
-                        sendAnswer = xmlParse.sendStatus(client,400, "Bad Request");
-                } else
-                    sendAnswer = xmlParse.sendStatus(client,401, "Unauthorized");
-                break;
-            default:
-                sendAnswer = xmlParse.sendStatus(client,405, "Method Not Allowed");
-                break;
-        }
-        return sendAnswer;
+        return xmlParse.getClient(clientFile);
     }
 
-    /** Ummarshaling the ask file from client and give the action for controller work
+    /**
+     * Find only login in "controller.xml" on controller side
+     *
+     * @param client is the client information
+     */
+    public boolean findLogin(Client client) {
+        return xmlParse.findLogin(client);
+    }
+
+    /**  Change information about the client in "login.xml" on controller side
+     @param client is the client information */
+    public void changeClient(Client client) {
+        xmlParse.changeClient(client);
+    }
+
+    /** Marshaling the answer file for "autorization" action from client
+     @param client is the information about the client
+     @return file is the answer file for "autorization" action from client */
+    public String sendId(Client client) {
+
+        return xmlParse.sendId(client);
+
+    }
+
+
+    /** Marshaling the answer file for status after some action from client
+     @param client is the information about the client
+     @param code is the answer code to the client
+     @param status is the answer to client
+     @return file is the answer file for status after some action from client */
+    public String sendStatus(Client client, int code, String status) {
+
+        return xmlParse.sendStatus(client, code, status);
+    }
+
+    /** Marshaling the answer file for "notification" action from client
+     @param client is the information about the client
+     @return file is the answer file for "notification" action from client */
+    public String sendTasksByTime(Client client) {
+        return xmlParse.sendTasksByTime(client);
+    }
+
+    /** Marshaling the answer file for "view" action from client
+     @param client is the information about the client
+     @return file is the answer file for "view" action from client */
+    public String sendTasks(Client client) {
+        return xmlParse.sendTasks(client);
+    }
+
+    /** Ummarshaling the ask file from client and give the task for delete
      @param s is the ask from client
-     @return action type for controller work */
-    public String getCommandType(String s)
-    {
-        log.info("get xml model" + s);
-        return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
+     @return task is the task for delete */
+    public Task getDeleteTask(String s) {
+        return xmlParse.getDeleteTask(s);
     }
 
-   /** Check if the client want to finish the session
-    @param recFile is the file from the client
-    @return b is "true" if ok */
-    public boolean activeClient(String recFile) {
-        char status = getCommandType(recFile).charAt(0);
-
-        switch (status) {
-            case 'c': // "close"
-                return false;
-            default:
-                break;
-        }
-
-        return true;
+    /** Ummarshaling the ask file from client and give the task list for adding
+     @param s is the ask from client
+     @return tasks is the task list for adding */
+    public ArrayTaskList getAddTask(String s) {
+        return xmlParse.getAddTask(s);
     }
 
-    /** Send answer with controller problem
-     @return sendFile is the file to send to the client
-    public static File sendServerException(int code, String status) {
-        File sendFile;
-        try
-        {
-            sendFile = XMLParse.sendStatus(new Client(),code,status);
-        }
-        catch (Exception e) {
-            sendFile = new File("ServerException.xml");
-        }
-        return sendFile;
-    }*/
-
+    /**
+     * Change session id of the client in "controller.xml" on controller side
+     *
+     * @param client is the client information
+     */
+    public boolean newSessionClient(Client client) {
+        return xmlParse.newSessionClient(client);
+    }
 }

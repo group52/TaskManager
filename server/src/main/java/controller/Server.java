@@ -1,11 +1,15 @@
 package controller;
 
+import model.ArrayTaskList;
+import model.Client;
 import model.Model;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import model.Task;
 import org.apache.log4j.Logger;
 
 /** class Server for work with one client(receive and save files) */
@@ -32,15 +36,15 @@ public class Server extends Thread {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-            Model model = new Model();
+
             boolean activeClient = true;
             String ask;
 
             while (activeClient) {
                 ask = recieveFile(in);
                 if (!"".equals(ask)) {
-                    sendFile(out, model.doWork(ask));
-                    activeClient = model.activeClient(ask);
+                    sendFile(out, doWork(ask));
+                    activeClient = activeClient(ask);
                     sleep(500);
                 }
             }            
@@ -82,6 +86,129 @@ public class Server extends Thread {
             log.error("InputOutput exception: ", ioe);
         }
         return messageFromStream;
+    }
+
+
+    /** Ummarshaling the ask file from client and give the action for controller work
+     @param s is the ask from client
+     @return action type for controller work */
+    public String getCommandType(String s)
+    {
+        log.info("get xml model" + s);
+        return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
+    }
+
+    /** Check if the client want to finish the session
+     @param recFile is the file from the client
+     @return b is "true" if ok */
+    public boolean activeClient(String recFile) {
+        char status = getCommandType(recFile).charAt(0);
+
+        switch (status) {
+            case 'c': // "close"
+                return false;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    /** Check the client "action" from client and do that on controller side
+     @param s is the string from the client
+     @return sendFile is the file to send to the client */
+    public String doWork(String s) {
+
+        Model model = new Model();
+        String sendAnswer;
+        char status = getCommandType(s).charAt(0);
+
+        Client client = model.getClient(s);
+
+        switch (status) {
+            case 'o':   // "oneMoreUser"
+                if (!model.findLogin(client)) {
+                    model.changeClient(model.newClient(client));
+                    sendAnswer = model.sendId(client);
+                }
+                else
+                    sendAnswer = model.sendStatus(client, 415, "Already exist");
+                break;
+            case 'u': // "user"
+                if (model.getAvtorization(client)) {
+                    Client clientUser = model.getClientFromFile(client);
+                    clientUser.setId(client.getId());
+                    model.changeClient(clientUser);
+                    sendAnswer = model.sendId(clientUser);
+                } else
+                    sendAnswer = model.sendStatus(client,404, "Not Found");
+                break;
+            case 'n': // "notification"
+                if (model.checkAvtorization(client)) {
+                    Client clientNotification = model.getClientFromFile(client);
+                    sendAnswer = model.sendTasksByTime(clientNotification);
+                }
+                else
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                break;
+            case 'v': // "view"
+                if (model.checkAvtorization(client)) {
+                    Client clientView = model.getClientFromFile(client);
+                    sendAnswer = model.sendTasks(clientView);
+                }
+                else
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                break;
+            case 'a': // "add"
+                if (model.checkAvtorization(client)) {
+                    Client clientAdd = model.getClientFromFile(client);
+                    if (model.workAdd(clientAdd, model.getAddTask(s)))
+                        sendAnswer = model.sendStatus(clientAdd, 201, "Created");
+                    else
+                        sendAnswer = model.sendStatus(client, 400, "Bad Request");
+                }
+                else
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                break;
+            case 'e': // "edit"
+                if (model.checkAvtorization(client)) {
+                    Client clientEdit = model.getClientFromFile(client);
+                    Task task = model.getDeleteTask(s);
+                    model.workDelete(clientEdit, task);
+                    ArrayTaskList tasks = model.getAddTask(s);
+                    tasks.remove(task);
+                    if (model.workAdd(clientEdit, tasks))
+                        sendAnswer = model.sendStatus(clientEdit, 202, "Accepted");
+                    else
+                        sendAnswer = model.sendStatus(client, 400, "Bad Request");
+                } else
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                break;
+            case 'd': // "delete"
+                if (model.checkAvtorization(client)) {
+                    Client clientDelete = model.getClientFromFile(client);
+                    if (model.workDelete(clientDelete, model.getDeleteTask(s)))
+                        sendAnswer = model.sendStatus(clientDelete, 202, "Accepted");
+                    else
+                        sendAnswer = model.sendStatus(client, 400, "Bad Request");
+                } else
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                break;
+            case 'c': // "close"
+                if (model.checkAvtorization(client)) {
+                    client.setId((int) System.currentTimeMillis());
+                    if (model.newSessionClient(client))
+                        sendAnswer = model.sendStatus(client,200, "OK");
+                    else
+                        sendAnswer = model.sendStatus(client,400, "Bad Request");
+                } else
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                break;
+            default:
+                sendAnswer = model.sendStatus(client,405, "Method Not Allowed");
+                break;
+        }
+        return sendAnswer;
     }
 
 }
