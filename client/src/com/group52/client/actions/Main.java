@@ -39,14 +39,14 @@ public class Main {
                 @Override
                 public void actionPerformed(ActionEvent event) {
                     try {
-                        if (event.getSource().equals(ipAddress.okButton)) {
+                        if (ipAddress.okButton.equals(event.getSource())) {
                             ipAddress.readServerIP();
                             ipAddress.close();
                             String ip = ipAddress.getIp();
                             writeIPToFile(ip);
                             new Handler(mainPanel, new ServerDialog(ip), notificator);
                         }
-                        if (event.getSource().equals(ipAddress.quitButton)) {
+                        if (ipAddress.quitButton.equals(event.getSource())) {
                             log.info("Quit");
                             System.exit(1);
                         }

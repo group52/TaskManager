@@ -38,7 +38,7 @@ public class Server extends Thread {
 
             while (activeClient) {
                 ask = recieveFile(in);
-                if (!ask.equals("")) {
+                if (!"".equals(ask)) {
                     sendFile(out, model.doWork(ask));
                     activeClient = model.activeClient(ask);
                     sleep(500);

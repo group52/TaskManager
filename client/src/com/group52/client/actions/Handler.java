@@ -58,12 +58,12 @@ public class Handler {
     private void updateTaskList () throws JAXBException {
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
             String s = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML(s).equals("view"))
+            if (XMLParse.getActionFromXML("view").equals(s))
             mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
 
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
             s = serverDialog.getResponseFromServer();
-            if (XMLParse.getActionFromXML(s).equals("notification")){
+            if (XMLParse.getActionFromXML("notification").equals(s)){
                 notificator.setTaskList(XMLParse.getTasks(s));
         }
 
@@ -122,7 +122,7 @@ public class Handler {
         public void actionPerformed(ActionEvent event) {
             notificator.setNotificationForm(notificationForm);
             try {
-                if (event.getSource().equals(signUpForm.confirmButton)) {
+                if (signUpForm.confirmButton.equals(event.getSource())) {
                     String login = signUpForm.getLogin();
                     String password = signUpForm.getPassword();
                     String repeatedPassword = signUpForm.getRepeatedPassword();
@@ -137,7 +137,7 @@ public class Handler {
                     welcomeForm.close();
                     mainPanel.open();
                 }
-                if (event.getSource().equals(signInForm.confirmButton)) {
+                if (signInForm.confirmButton.equals(event.getSource())) {
                     String login = signInForm.getLogin();
                     String password = signInForm.getPassword();
                     XMLParse.createClient(login, password, 0);
@@ -150,7 +150,7 @@ public class Handler {
                     welcomeForm.close();
                     mainPanel.open();
                 }
-                if (event.getSource().equals(welcomeForm.ipButton)) {
+                if (welcomeForm.ipButton.equals(event.getSource())) {
                     log.info("changing server IP address");
                     welcomeForm.close();
                     notificator.setWork(false);
@@ -160,7 +160,7 @@ public class Handler {
                     Main.main(new String[]{});
                 }
 
-                if (event.getSource().equals(unrepeatableTaskForm.unrepeatableTaskButton)) {
+                if (unrepeatableTaskForm.unrepeatableTaskButton.equals(event.getSource())) {
                     String title = unrepeatableTaskForm.getTitle();
                     String description = unrepeatableTaskForm.getDescription();
                     long time = unrepeatableTaskForm.getStartTime();
@@ -173,7 +173,7 @@ public class Handler {
                     updateTaskList();
                 }
 
-                if (event.getSource().equals(repeatableTaskForm.repeatableTaskButton)) {
+                if (repeatableTaskForm.repeatableTaskButton.equals(event.getSource())) {
                     String title = repeatableTaskForm.getTitle();
                     String description = repeatableTaskForm.getDescription();
                     long start = repeatableTaskForm.getStartTime();
@@ -190,7 +190,7 @@ public class Handler {
                     updateTaskList();
                 }
 
-                if (event.getSource().equals(editTaskForm.editTaskButton)) {
+                if (editTaskForm.editTaskButton.equals(event.getSource())) {
                     XMLParse.Task oldTask = (XMLParse.Task) editTaskForm.comboBox.getModel().getSelectedItem();
                     String title = editTaskForm.getTitle();
                     String description = editTaskForm.getDescription();
@@ -214,7 +214,7 @@ public class Handler {
                     updateTaskList();
                 }
 
-                if (event.getSource().equals(deleteTaskForm.deleteTaskButton)) {
+                if (deleteTaskForm.deleteTaskButton.equals(event.getSource())) {
                     XMLParse.Task task = (XMLParse.Task) deleteTaskForm.comboBox.getModel().getSelectedItem();
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("delete", task));
 
@@ -223,7 +223,7 @@ public class Handler {
                     updateTaskList();
                 }
 
-                if (event.getSource().equals(notificationForm.postponeTaskButton)) {
+                if (notificationForm.postponeTaskButton.equals(event.getSource())) {
                     XMLParse.Task task = notificator.getTaskToPostpone();
                     long time = task.getTime() + 300000;
                     serverDialog.sendXMLToServer(XMLParse.parseTaskToXML("add", task.getTitle(),
@@ -234,48 +234,48 @@ public class Handler {
                     updateTaskList();
                 }
 
-                if (event.getSource().equals(mainPanel.calendarFormButton)) {
+                if (mainPanel.calendarFormButton.equals(event.getSource())) {
                     new Calendar(true);
                 }
-                if (event.getSource().equals(welcomeForm.signUpButton)) signUpForm.open();
-                if (event.getSource().equals(signUpForm.cancelButton)) signUpForm.close();
+                if (welcomeForm.signUpButton.equals(event.getSource())) signUpForm.open();
+                if (signUpForm.cancelButton.equals(event.getSource())) signUpForm.close();
 
-                if (event.getSource().equals(welcomeForm.signInButton)) signInForm.open();
-                if (event.getSource().equals(signInForm.cancelButton)) signInForm.close();
+                if (welcomeForm.signInButton.equals(event.getSource())) signInForm.open();
+                if (signInForm.cancelButton.equals(event.getSource())) signInForm.close();
 
-                if (event.getSource().equals(mainPanel.unrepeatableTaskFormButton)) unrepeatableTaskForm.open();
-                if (event.getSource().equals(unrepeatableTaskForm.cancelButton)) unrepeatableTaskForm.close();
+                if (mainPanel.unrepeatableTaskFormButton.equals(event.getSource())) unrepeatableTaskForm.open();
+                if (unrepeatableTaskForm.cancelButton.equals(event.getSource())) unrepeatableTaskForm.close();
 
-                if (event.getSource().equals(mainPanel.repeatableTaskFormButton)) repeatableTaskForm.open();
-                if (event.getSource().equals(repeatableTaskForm.cancelButton)) repeatableTaskForm.close();
+                if (mainPanel.repeatableTaskFormButton.equals(event.getSource())) repeatableTaskForm.open();
+                if (repeatableTaskForm.cancelButton.equals(event.getSource())) repeatableTaskForm.close();
 
-                if (event.getSource().equals(mainPanel.editTaskFormButton)) {
+                if (mainPanel.editTaskFormButton.equals(event.getSource())) {
                     editTasksToComboBox(editTaskForm.comboBox);
                     XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getElementAt(0);
                     editTaskForm.addTaskInfo(task.getTitle(), task.getDescription());
                     editTaskForm.open();
                 }
-                if (event.getSource().equals(editTaskForm.cancelButton)) editTaskForm.close();
+                if (editTaskForm.cancelButton.equals(event.getSource())) editTaskForm.close();
 
-                if (event.getSource().equals(editTaskForm.comboBox)) {
+                if (editTaskForm.comboBox.equals(event.getSource())) {
                     XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getSelectedItem();
                     editTaskForm.addTaskInfo(task.getTitle(), task.getDescription());
                     if (task.getInterval() == 0) editTaskForm.removeRepeatableFields();
                     else editTaskForm.addRepeatableFields();
                 }
 
-                if (event.getSource().equals(mainPanel.deleteTaskFormButton)) {
+                if (mainPanel.deleteTaskFormButton.equals(event.getSource())) {
                     editTasksToComboBox(deleteTaskForm.comboBox);
                     deleteTaskForm.open();
                 }
-                if (event.getSource().equals(deleteTaskForm.cancelButton)) deleteTaskForm.close();
+                if (deleteTaskForm.cancelButton.equals(event.getSource())) deleteTaskForm.close();
 
-                if (event.getSource().equals(notificationForm.closeTaskButton)) {
+                if (notificationForm.closeTaskButton.equals(event.getSource())) {
                     notificationForm.close();
                     updateTaskList();
                 }
 
-                if (event.getSource().equals(mainPanel.exitButton)) {
+                if (mainPanel.exitButton.equals(event.getSource())) {
                     log.info("Logout");
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
                     serverDialog.close();
