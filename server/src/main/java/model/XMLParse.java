@@ -494,7 +494,7 @@ public class XMLParse {
      */
     public void addClient(Client client) {
         try {
-            File file = new File("xml/" + "controller.xml");
+            File file = new File(new java.io.File("xml/controller.xml").getAbsolutePath());
             XMLParse.Server server;
             JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
@@ -525,7 +525,7 @@ public class XMLParse {
      */
     public boolean newSessionClient(Client client) {
         try {
-            File file = new File("xml/" + "controller.xml");
+            File file = new File(new java.io.File("xml/controller.xml").getAbsolutePath());
             XMLParse.Server server;
             JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
 
@@ -563,7 +563,7 @@ public class XMLParse {
      */
     public boolean findLogin(Client client) {
         try {
-            File file = new File("xml/" + "controller.xml");
+            File file = new File(new java.io.File("xml/controller.xml").getAbsolutePath());
 
             if (file.isFile()) {
                 JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
@@ -595,7 +595,7 @@ public class XMLParse {
      */
     public boolean findClient(Client client) {
         try {
-            File file = new File("xml/" + "controller.xml");
+            File file = new File(new java.io.File("xml/controller.xml").getAbsolutePath());
 
             if (file.isFile()) {
                 JAXBContext jc = JAXBContext.newInstance(XMLParse.Server.class);
@@ -626,7 +626,7 @@ public class XMLParse {
      @param client is the client information */
     public void changeClient(Client client) {
         try {
-            File file = new File("xml/" + client.getLogin() + ".xml");
+            File file =  new File(new java.io.File("xml/" + client.getLogin() + ".xml").getAbsolutePath());
             XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
             XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", 200, "Ok");
             if(client.getArrayList().size() != 0)

@@ -68,7 +68,7 @@ public class Model {
      @param client is the client
      @return client information */
     public Client getClientFromFile(Client client) {
-        File clientFile = new File("xml/" + client.getLogin() + ".xml");
+        File clientFile = new File(new java.io.File("xml/" + client.getLogin() + ".xml").getAbsolutePath());
         return xmlParse.getClient(clientFile);
     }
 
