@@ -296,10 +296,10 @@ public class Handler {
                 }
             } catch (JAXBException jaxb) {
                 mainPanel.displayErrorMessage("Parse exception");
-                log.error("JAXBException: " + jaxb);
+                log.error("JAXBException: ", jaxb);
             } catch (ServerException se) {
                 mainPanel.displayErrorMessage(se.getMessage());
-                log.error("Server exception: " + se);
+                log.error("Server exception: ", se);
             } catch (IllegalArgumentException iae) {
                 mainPanel.displayErrorMessage(iae.getMessage());
                 log.error("IllegalArgumentException: ", iae);
@@ -328,7 +328,7 @@ public class Handler {
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
                 } catch (JAXBException jaxb) {
                     mainPanel.displayErrorMessage("Parse exception");
-                    log.error("JAXBException: " + jaxb);
+                    log.error("JAXBException: ", jaxb);
                 }
                 log.info("close");
                 serverDialog.close();

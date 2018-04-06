@@ -52,7 +52,7 @@ public class Main {
                         }
                     } catch (NullPointerException npe) {
                         mainPanel.displayErrorMessage(npe.getMessage());
-                        log.error(npe);
+                        log.error("NullPointerException: ", npe);
                     }
                 }
             });
@@ -69,7 +69,7 @@ public class Main {
             }
             in.close();
         } catch (FileNotFoundException e) {
-            log.error(e);
+            log.error("FileNotFoundException: ", e);
             new File("ip.txt");
         }
         return ip;
@@ -79,7 +79,7 @@ public class Main {
         try (FileWriter writer = new FileWriter("ip.txt")){
             writer.write(ip);
         } catch (IOException e) {
-            log.error(e);
+            log.error("IOException: ", e);
         }
     }
 }

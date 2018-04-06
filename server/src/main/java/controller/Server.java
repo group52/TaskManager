@@ -56,12 +56,12 @@ public class Server extends Thread {
                     }
                 }
             } catch (IOException ioe) {
-                log.error("InputOutput exception: " + ioe);
+                log.error("InputOutput exception: ", ioe);
             } catch (InterruptedException e) {
-                log.error("InterruptedException: " + e);
+                log.error("InterruptedException: ", e);
             }
         } catch (IOException ioe) {
-            log.error("InputOutput exception: " + ioe);
+            log.error("InputOutput exception: ", ioe);
         }
     }
 
@@ -84,7 +84,7 @@ public class Server extends Thread {
             log.debug("get xml" + messageFromStream);
         } catch (IOException ioe) {
             socket.close();
-            log.error("InputOutput exception: " + ioe);
+            log.error("InputOutput exception: ", ioe);
         }
         return messageFromStream;
     }

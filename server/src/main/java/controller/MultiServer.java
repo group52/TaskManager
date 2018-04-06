@@ -21,11 +21,11 @@ public class MultiServer {
                     new Server(socket);
                 }
                 catch (Exception e) {
-                    log.error(e);
+                    log.error("Exception: ", e);
                 }
             }
         } catch (IOException ioe) {
-            log.error(ioe);
+            log.error("InputOutput exception: ", ioe);
         }
     }
 }

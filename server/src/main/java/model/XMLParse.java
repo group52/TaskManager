@@ -514,7 +514,7 @@ public class XMLParse {
             jaxbMarshaller.marshal(server, file);
 
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
         }
     }
 
@@ -551,7 +551,7 @@ public class XMLParse {
                 }
             }
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
         }
         return false;
     }
@@ -582,7 +582,7 @@ public class XMLParse {
                 return false;
 
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
         }
 
         return false;
@@ -616,7 +616,7 @@ public class XMLParse {
                 return false;
 
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
         }
 
         return false;
@@ -640,7 +640,7 @@ public class XMLParse {
             jaxbMarshaller.marshal(socket,file);
 
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
         }
     }
 
@@ -658,7 +658,7 @@ public class XMLParse {
             socket = (XMLParse.Socket) jaxbUnmarshaller.unmarshal(new StringReader(s));
             return socket;
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
             socket = new Socket();
         }
         return socket;
@@ -705,7 +705,7 @@ public class XMLParse {
             return socket;
 
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
             socket = new Socket();
         }
 
@@ -799,7 +799,7 @@ public class XMLParse {
             text = sw.toString().replaceAll("\n","");
 
         } catch (JAXBException e) {
-            log.error("JAXBException: " + e);
+            log.error("JAXBException: ", e);
             text = "";
         }
 
