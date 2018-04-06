@@ -150,7 +150,10 @@ public class Server extends Thread {
             case 'v': // "view"
                 if (model.checkAvtorization(client)) {
                     Client clientView = model.getClientFromFile(client);
-                    sendAnswer = model.sendTasks(clientView);
+                    if (clientView.getArrayList().size() > 0)
+                        sendAnswer = model.sendTasks(clientView);
+                    else
+                        sendAnswer = model.sendStatus(client,404, "Not Found");
                 }
                 else
                     sendAnswer = model.sendStatus(client,401, "Unauthorized");
