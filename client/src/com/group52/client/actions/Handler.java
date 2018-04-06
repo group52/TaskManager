@@ -164,7 +164,7 @@ public class Handler {
                     welcomeForm.close();
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
                     serverDialog.close();
-                    Main.createIPForm(mainPanel, notificator);
+                    Main.createSocketForm(mainPanel, notificator);
                 }
 
                 if (unrepeatableTaskForm.unrepeatableTaskButton.equals(event.getSource())) {

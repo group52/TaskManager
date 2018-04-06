@@ -1,6 +1,6 @@
 package com.group52.client.actions;
 
-import com.group52.client.view.IPAddress;
+import com.group52.client.view.SocketAddress;
 import com.group52.client.view.MainPanel;
 import org.apache.log4j.Logger;
 
@@ -21,7 +21,6 @@ public class Main {
      */
     public static void main(String[] args) {
         log.info("Start");
-
         Notificator notificator = new Notificator();
         notificator.setWork(true);
         Thread notificationThread = new Thread(notificator);
@@ -29,73 +28,77 @@ public class Main {
 
         MainPanel mainPanel = new MainPanel();
 
-        String ip = readIPFromFile();
-        if (ip != null) {
+        String socket = readSocketFromFile();
+        if (socket != null) {
             try {
-                new Handler(mainPanel, new ServerDialog(ip), notificator);
+                String ip = socket.substring(0, socket.indexOf(':'));
+                int port = Integer.parseInt(socket.substring(socket.indexOf(':')+ 1));
+                new Handler(mainPanel, new ServerDialog(ip, port), notificator);
             } catch (IOException ioe) {
                 mainPanel.displayErrorMessage(ioe.getMessage());
                 log.error("InputOutput exceptions: ", ioe);
-                createIPForm(mainPanel, notificator);
+                createSocketForm(mainPanel, notificator);
             }
         } else {
-            createIPForm(mainPanel, notificator);
+            createSocketForm(mainPanel, notificator);
         }
     }
 
-    public static void createIPForm(MainPanel mainPanel, Notificator notificator) {
-        IPAddress ipAddress = new IPAddress();
-        ipAddress.open();
-        ipAddress.addListener(new ActionListener() {
+    public static void createSocketForm(MainPanel mainPanel, Notificator notificator) {
+        SocketAddress socketAddress = new SocketAddress();
+        socketAddress.open();
+        socketAddress.addListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 try {
-                    if (ipAddress.okButton.equals(event.getSource())) {
-                        ipAddress.readServerIP();
-                        ipAddress.close();
-                        String ip = ipAddress.getIp();
-                        writeIPToFile(ip);
-                        new Handler(mainPanel, new ServerDialog(ip), notificator);
-                        log.info("Changing server IP address to " + ip);
+                    if (socketAddress.okButton.equals(event.getSource())) {
+                        socketAddress.readSocketAddress();
+                        socketAddress.close();
+                        String socket = socketAddress.getSocketAddress();
+                        writeSocketToFile(socket);
+                        String ip = socket.substring(0, socket.indexOf(':'));
+                        int port = Integer.parseInt(socket.substring(socket.indexOf(':')+ 1));
+                        new Handler(mainPanel, new ServerDialog(ip, port), notificator);
+                        log.info("Changing server IP address to " + socket);
                     }
-                    if (ipAddress.quitButton.equals(event.getSource())) {
+                    if (socketAddress.quitButton.equals(event.getSource())) {
                         log.info("Quit");
                         System.exit(1);
                     }
                 } catch (NullPointerException npe) {
                     mainPanel.displayErrorMessage(npe.getMessage());
-                    log.error(npe);
-                    ipAddress.open();
+                    log.error("NullPointerException", npe);
+                    socketAddress.open();
                 } catch (IOException e) {
                     mainPanel.displayErrorMessage(e.getMessage());
-                    log.error(e);
-                    ipAddress.open();
+                    log.error("IOException", e);
+                    socketAddress.open();
                 }
             }
         });
     }
 
-    private static String readIPFromFile() {
-        String ip = null;
+    private static String readSocketFromFile() {
+        String socket = null;
         Scanner in = null;
         try {
-            in = new Scanner(new FileReader("ip.txt"));
+            in = new Scanner(new FileReader("socket.txt"));
             while(in.hasNext()) {
-                ip = in.next();
+                socket = in.next();
             }
             in.close();
         } catch (FileNotFoundException e) {
-            log.error(e);
-            new File("ip.txt");
+            log.error("FileNotFoundException", e);
+            new File("socket.txt");
         }
-        return ip;
+        return socket;
     }
 
-    public static void writeIPToFile(String ip) {
-        try (FileWriter writer = new FileWriter("ip.txt")){
-            writer.write(ip);
+    public static void writeSocketToFile(String socket) {
+        try (FileWriter writer = new FileWriter("socket.txt")){
+            writer.write(socket);
         } catch (IOException e) {
-            log.error(e);
+            log.error("IOException", e);
         }
     }
 }

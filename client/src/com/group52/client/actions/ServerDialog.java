@@ -19,8 +19,8 @@ public class ServerDialog {
      * @see ServerDialog
      * @param serverAddress is server address
      */
-    public ServerDialog(String serverAddress) throws IOException {
-        socket = new Socket(serverAddress, 7002);
+    public ServerDialog(String serverAddress, int port) throws IOException {
+        socket = new Socket(serverAddress, port);
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
     }
@@ -64,7 +64,6 @@ public class ServerDialog {
             log.error("InputOutput exception: ", ioe);
         } catch (NullPointerException npe) {
             log.error("NullPointerException: ",npe);
-            Main.writeIPToFile("");
         }
     }
 }

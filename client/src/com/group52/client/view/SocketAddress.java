@@ -5,16 +5,16 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.net.URL;
 
-public class IPAddress implements Closeable, Listenable {
+public class SocketAddress implements Closeable, Listenable {
     public JButton okButton = new JButton("Ok");
     public JButton quitButton = new JButton("Quit");
-    private JTextField iPField = new JTextField(20);
+    private JTextField socketField = new JTextField(20);
     private JFrame frame;
-    private String ip;
+    private String socketAddress;
 
-    public IPAddress() {
+    public SocketAddress() {
         frame = new JFrame("Task Manager");
-        frame.setSize(300, 160);
+        frame.setSize(310, 160);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -22,35 +22,35 @@ public class IPAddress implements Closeable, Listenable {
         frame.setIconImage(Toolkit.getDefaultToolkit().getImage(iconPath));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JLabel label = new JLabel("Enter IP Address of the Server:");
+        JLabel label = new JLabel("Enter IP and port of the Server:");
         label.setBounds(20,10,280,40);
         label.setIcon(UIManager.getIcon("OptionPane.questionIcon"));
         label.setFont(new Font("Verdana", Font.PLAIN, 14));
 
-        iPField.setBounds(20,50,260,30);
+        socketField.setBounds(20,50,260,30);
         okButton.setBounds(110,90,80,30);
         quitButton.setBounds(200,90,80,30);
         frame.add(label);
-        frame.add(iPField);
+        frame.add(socketField);
         frame.add(okButton);
         frame.add(quitButton);
     }
 
     /**
-     * method where we read server IP from field
-     * @throws NullPointerException if IP field is empty
+     * method where we read server socket from field
+     * @throws NullPointerException if socket field is empty
      */
-    public void readServerIP() throws NullPointerException {
-        if (iPField.getText().isEmpty()) throw new NullPointerException("Title field is empty");
-        ip = iPField.getText();
+    public void readSocketAddress() throws NullPointerException {
+        if (socketField.getText().isEmpty()) throw new NullPointerException("Field is empty");
+        socketAddress = socketField.getText();
     }
 
     /**
-     * method where we get server IP
-     * @return IP
+     * method where we get server socket
+     * @return socket
      */
-    public String getIp() {
-        return ip;
+    public String getSocketAddress() {
+        return socketAddress;
     }
 
     @Override
