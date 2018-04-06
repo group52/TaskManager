@@ -31,32 +31,48 @@ public class Main {
 
         String ip = readIPFromFile();
         if (ip != null) {
-            new Handler(mainPanel, new ServerDialog(ip), notificator);
+            try {
+                new Handler(mainPanel, new ServerDialog(ip), notificator);
+            } catch (IOException ioe) {
+                mainPanel.displayErrorMessage(ioe.getMessage());
+                log.error("InputOutput exceptions: ", ioe);
+                createIPForm(mainPanel, notificator);
+            }
         } else {
-            IPAddress ipAddress = new IPAddress();
-            ipAddress.open();
-            ipAddress.addListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    try {
-                        if (ipAddress.okButton.equals(event.getSource())) {
-                            ipAddress.readServerIP();
-                            ipAddress.close();
-                            String ip = ipAddress.getIp();
-                            writeIPToFile(ip);
-                            new Handler(mainPanel, new ServerDialog(ip), notificator);
-                        }
-                        if (ipAddress.quitButton.equals(event.getSource())) {
-                            log.info("Quit");
-                            System.exit(1);
-                        }
-                    } catch (NullPointerException npe) {
-                        mainPanel.displayErrorMessage(npe.getMessage());
-                        log.error("NullPointerException: ", npe);
-                    }
-                }
-            });
+            createIPForm(mainPanel, notificator);
         }
+    }
+
+    public static void createIPForm(MainPanel mainPanel, Notificator notificator) {
+        IPAddress ipAddress = new IPAddress();
+        ipAddress.open();
+        ipAddress.addListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    if (ipAddress.okButton.equals(event.getSource())) {
+                        ipAddress.readServerIP();
+                        ipAddress.close();
+                        String ip = ipAddress.getIp();
+                        writeIPToFile(ip);
+                        new Handler(mainPanel, new ServerDialog(ip), notificator);
+                        log.info("Changing server IP address to " + ip);
+                    }
+                    if (ipAddress.quitButton.equals(event.getSource())) {
+                        log.info("Quit");
+                        System.exit(1);
+                    }
+                } catch (NullPointerException npe) {
+                    mainPanel.displayErrorMessage(npe.getMessage());
+                    log.error(npe);
+                    ipAddress.open();
+                } catch (IOException e) {
+                    mainPanel.displayErrorMessage(e.getMessage());
+                    log.error(e);
+                    ipAddress.open();
+                }
+            }
+        });
     }
 
     private static String readIPFromFile() {
@@ -69,7 +85,7 @@ public class Main {
             }
             in.close();
         } catch (FileNotFoundException e) {
-            log.error("FileNotFoundException: ", e);
+            log.error(e);
             new File("ip.txt");
         }
         return ip;
@@ -79,7 +95,7 @@ public class Main {
         try (FileWriter writer = new FileWriter("ip.txt")){
             writer.write(ip);
         } catch (IOException e) {
-            log.error("IOException: ", e);
+            log.error(e);
         }
     }
 }

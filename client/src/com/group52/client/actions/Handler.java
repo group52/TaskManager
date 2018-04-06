@@ -161,13 +161,10 @@ public class Handler {
                     mainPanel.open();
                 }
                 if (welcomeForm.ipButton.equals(event.getSource())) {
-                    log.info("changing server IP address");
                     welcomeForm.close();
-                    notificator.setWork(false);
                     serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("close"));
                     serverDialog.close();
-                    Main.writeIPToFile("");
-                    Main.main(new String[]{});
+                    Main.createIPForm(mainPanel, notificator);
                 }
 
                 if (unrepeatableTaskForm.unrepeatableTaskButton.equals(event.getSource())) {

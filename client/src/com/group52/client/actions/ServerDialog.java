@@ -19,15 +19,10 @@ public class ServerDialog {
      * @see ServerDialog
      * @param serverAddress is server address
      */
-    public ServerDialog(String serverAddress)  {
-        try {
-            socket = new Socket(serverAddress, 7002);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (IOException ioe) {
-            log.error("InputOutput exception: ", ioe);
-            close();
-        }
+    public ServerDialog(String serverAddress) throws IOException {
+        socket = new Socket(serverAddress, 7002);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new PrintWriter(socket.getOutputStream(), true);
     }
 
     /**
