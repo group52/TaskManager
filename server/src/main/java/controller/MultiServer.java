@@ -18,7 +18,8 @@ public class MultiServer {
             while (true) {
                 Socket socket = s.accept();
                 try {
-                    new Server(socket);
+                    Server server = new Server(socket);
+                    server.start();
                 }
                 catch (Exception e) {
                     log.error("Exception: ", e);

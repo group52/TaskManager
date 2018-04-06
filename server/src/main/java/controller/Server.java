@@ -25,7 +25,6 @@ public class Server extends Thread {
         this.socket = socket;
         setDaemon(true);
         setPriority(NORM_PRIORITY);
-        start();
     }
 
     /** Main work for each thread */
