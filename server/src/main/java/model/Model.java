@@ -47,10 +47,7 @@ public class Model {
      @return b is "true" if ok */
     public boolean getAvtorization(Client client) {
         client.setId((int) System.currentTimeMillis());
-        if (xmlParse.newSessionClient(client)) {
-            return true;
-        }
-        return false;
+        return xmlParse.newSessionClient(client);
     }
 
     /** Check the client "session_id" from client with the controller information
@@ -94,9 +91,7 @@ public class Model {
      @param client is the information about the client
      @return file is the answer file for "autorization" action from client */
     public String sendId(Client client) {
-
         return xmlParse.sendId(client);
-
     }
 
 
@@ -106,7 +101,6 @@ public class Model {
      @param status is the answer to client
      @return file is the answer file for status after some action from client */
     public String sendStatus(Client client, int code, String status) {
-
         return xmlParse.sendStatus(client, code, status);
     }
 

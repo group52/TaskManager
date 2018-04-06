@@ -122,7 +122,6 @@ public class Client {
         final int primeNumber2 = 11;
         final int primeNumber3 = 13;
 
-
         return primeNumber1 * login.hashCode()
                 + primeNumber2 * password.hashCode()
                 + primeNumber3 * arrayList.hashCode();
@@ -142,9 +141,6 @@ public class Client {
      @throws CloneNotSupportedException - if the object's class does not
      support the Cloneable interface */
     public Client clone() throws CloneNotSupportedException {
-
-        Client cloned = (Client) super.clone();
-
-        return cloned;
+        return (Client) super.clone();
     }
 }

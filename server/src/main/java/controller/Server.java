@@ -34,9 +34,7 @@ public class Server extends Thread {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             boolean activeClient = true;
-            String ask;
-
-            ask = recieveFile(in);
+            String ask = recieveFile(in);
 
             if ("".equals(ask)) {
                 activeClient = false;
@@ -65,25 +63,21 @@ public class Server extends Thread {
         } catch (IOException ioe) {
             log.error("InputOutput exception: " + ioe);
         }
-
     }
 
     /** Send the @param file using some @param OutputStream
     @param s is the string for send
     @param output is the OutputStream for sending to the client */
     public void sendFile(PrintWriter output, String s) {
-
         s = s.replaceAll("\n","");
         output.println(s);
         log.debug("send xml" + s);
-
     }
     
     /** Receive the @return file using some @param InputStream  
     @param input is the input for receive
     @return the String from the client */
     private String recieveFile(BufferedReader input) throws IOException {
-
         String messageFromStream = "";
         try {
             messageFromStream = input.readLine();
@@ -99,8 +93,7 @@ public class Server extends Thread {
     /** Ummarshaling the ask file from client and give the action for controller work
      @param s is the ask from client
      @return action type for controller work */
-    public String getCommandType(String s)
-    {
+    public String getCommandType(String s) {
         return s.substring(s.indexOf(">",s.indexOf("<action")) + 1, s.indexOf("<",s.indexOf("<action>") + 1 ));
     }
 
@@ -116,7 +109,6 @@ public class Server extends Thread {
             default:
                 break;
         }
-
         return true;
     }
 
@@ -128,7 +120,6 @@ public class Server extends Thread {
         Model model = new Model();
         String sendAnswer;
         char status = getCommandType(s).charAt(0);
-
         Client client = model.getClient(s);
 
         switch (status) {
@@ -216,5 +207,4 @@ public class Server extends Thread {
         }
         return sendAnswer;
     }
-
 }
