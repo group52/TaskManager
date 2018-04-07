@@ -1,2 +1,2 @@
-java -jar TaskManager-1.0.jar
+java -jar client-jar-with-dependencies.jar
 pause
