@@ -9,17 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <properties>
-        <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-    </properties>
-
+    
     <artifactId>server</artifactId>
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
-        </dependency>
+        </dependency>        
     </dependencies>
 
     <build>
@@ -38,29 +35,60 @@
                         <addMavenDescriptor>false</addMavenDescriptor>
                         <manifest>
                             <addClasspath>true</addClasspath>                            
-                            <classpathPrefix>dependency-jars/</classpathPrefix>                        
+                            <classpathPrefix>lib/</classpathPrefix>                        
                             <mainClass>controller.MultiServer</mainClass>
                         </manifest>
                     </archive>
+                <excludes>
+                    <exclude>**/xml/*.*</exclude>
+                </excludes>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${project.build.directory}/lib/</outputDirectory>
-                    <overWriteReleases>false</overWriteReleases>
-                    <overWriteSnapshots>false</overWriteSnapshots>
-                    <overWriteIfNewer>true</overWriteIfNewer>
-                </configuration>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
                 <executions>
                     <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>copy-resources</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.sourceDirectory}/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>log4j.properties</include>
+                                    </includes>
+                                </resource>                                
+                            </resources>
+                        </configuration>
                     </execution>
+                </executions>  
+            </plugin>                
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                  <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                  </descriptorRefs>
+                  <archive>
+                    <manifest>
+                      <mainClass>controller.MultiServer</mainClass>
+                    </manifest>
+                  </archive>
+                </configuration>
+                <executions>
+                  <execution>
+                    <id>make-my-jar-with-dependencies</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>single</goal>
+                    </goals>
+                  </execution>
                 </executions>
             </plugin>
         </plugins>
