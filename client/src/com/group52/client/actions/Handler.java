@@ -47,8 +47,12 @@ public class Handler {
         String s = serverDialog.getResponseFromServer();
         int code = XMLParse.getCodeFromXML(s);
         String status = XMLParse.getStatusFromXML(s);
+        String action = XMLParse.getActionFromXML(s);
         if (code == 400 || code == 401 || code == 404 || code == 405 || code == 415 || code == 500)
             throw new ServerException(status);
+        else if (code == 200 || code == 202) {
+            if ("user".equals(action)) mainPanel.displayMessage(status);
+        }
         else mainPanel.displayMessage(status);
         return s;
     }
