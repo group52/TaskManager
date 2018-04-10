@@ -264,8 +264,8 @@ public class Handler {
                         editTasksToComboBox(editTaskForm.comboBox);
                     if (editTaskForm.comboBox.getModel().getElementAt(0) != null) {
                         XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getElementAt(0);
-                        editTaskForm.addTaskInfo(task.getTitle(), task.getDescription(),task.getInterval());
                         editTaskForm.open();
+                        editTaskForm.addTaskInfo(task.getTitle(), task.getDescription(),task.getInterval());
                     }
                 }
                 if (editTaskForm.cancelButton.equals(event.getSource())) editTaskForm.close();
