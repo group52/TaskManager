@@ -261,18 +261,22 @@ public class Handler {
                 if (repeatableTaskForm.cancelButton.equals(event.getSource())) repeatableTaskForm.close();
 
                 if (mainPanel.editTaskFormButton.equals(event.getSource())) {
-                    editTasksToComboBox(editTaskForm.comboBox);
-                    XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getElementAt(0);
-                    editTaskForm.addTaskInfo(task.getTitle(), task.getDescription());
-                    editTaskForm.open();
+                        editTasksToComboBox(editTaskForm.comboBox);
+                    if (editTaskForm.comboBox.getModel().getElementAt(0) != null) {
+                        XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getElementAt(0);
+                        editTaskForm.addTaskInfo(task.getTitle(), task.getDescription(),task.getInterval());
+                        editTaskForm.open();
+                    }
                 }
                 if (editTaskForm.cancelButton.equals(event.getSource())) editTaskForm.close();
 
                 if (editTaskForm.comboBox.equals(event.getSource())) {
-                    XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getSelectedItem();
-                    editTaskForm.addTaskInfo(task.getTitle(), task.getDescription());
-                    if (task.getInterval() == 0) editTaskForm.removeRepeatableFields();
-                    else editTaskForm.addRepeatableFields();
+                    if (editTaskForm.comboBox.getModel().getSelectedItem() != null) {
+                        XMLParse.Task task = (XMLParse.Task) editTaskForm.comboBox.getModel().getSelectedItem();
+                        editTaskForm.addTaskInfo(task.getTitle(), task.getDescription(), task.getInterval());
+                        if (task.getInterval() == 0) editTaskForm.removeRepeatableFields();
+                        else editTaskForm.addRepeatableFields();
+                    }
                 }
 
                 if (mainPanel.deleteTaskFormButton.equals(event.getSource())) {

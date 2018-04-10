@@ -170,10 +170,11 @@ public class EditTaskForm extends MainPanel implements Listenable {
     /**
      * method where we add task's info to fields
      */
-    public void addTaskInfo(String title, String description) {
+    public void addTaskInfo(String title, String description, int interval) {
         flushFields();
         titleField.setText(title);
         descriptionField.setText(description);
+        intervalField.setText(String.valueOf(interval/1000));
     }
 
     @Override
