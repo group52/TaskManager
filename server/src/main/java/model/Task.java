@@ -20,15 +20,12 @@ public class Task implements Cloneable, Serializable {
     private String title;
 
     @XmlElement(name = "time")
-    //@XmlJavaTypeAdapter(DateTimeAdapter.class)
     private Date time;
 
     @XmlElement(name = "start")
-    //@XmlJavaTypeAdapter(DateTimeAdapter.class)
     private Date start;
 
     @XmlElement(name = "end")
-    //@XmlJavaTypeAdapter(DateTimeAdapter.class)
     private Date end;
 
     @XmlElement(name = "interval")
