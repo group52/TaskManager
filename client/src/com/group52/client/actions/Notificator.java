@@ -4,11 +4,13 @@ import com.group52.client.view.NotificationForm;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.log4j.Logger;
 /**
  * class Notificator to notify user about tasks
  */
 public class Notificator extends Thread {
 
+    private static Logger log = Logger.getLogger(Handler.class);
     private NotificationForm notificationForm;
     private List<XMLParse.Task> taskList = new ArrayList<>();
     private XMLParse.Task taskToPostpone = new XMLParse.Task();
@@ -21,7 +23,7 @@ public class Notificator extends Thread {
             if (taskList != null) {
                 for (XMLParse.Task task : taskList) {
                     if (task != null) {
-                        if (task.getTime() == curTime) {
+                        if (curTime - task.getTime() > 0 && curTime - task.getTime() < 500) {
                             notificationForm.showTask("Time for doing: " + task.getTitle()
                                     + "\nTime: " + new Date(task.getTime()) + "\n");
                             setTaskToPostpone(task);
@@ -29,6 +31,11 @@ public class Notificator extends Thread {
                         }
                     }
                 }
+            }
+            try {
+                sleep(500);
+            } catch (InterruptedException e) {
+                log.error("InterruptedException exceptions: ", e);
             }
         }
     }

@@ -24,6 +24,7 @@ public class Main {
         Notificator notificator = new Notificator();
         notificator.setWork(true);
         Thread notificationThread = new Thread(notificator);
+        notificationThread.setDaemon(true);
         notificationThread.start();
 
         MainPanel mainPanel = new MainPanel();
