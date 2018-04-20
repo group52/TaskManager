@@ -23,7 +23,6 @@ public class ArrayTaskList extends TaskList {
         if (arrayTask.length < realSize) {
             Task[] arrayTaskold = arrayTask;
             arrayTask = new Task[arrayTask.length * 2];
-
             System.arraycopy(arrayTaskold, 0, arrayTask, 0, arrayTaskold.length);
         }
         arrayTask[realSize - 1] = task;
