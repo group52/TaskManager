@@ -23,10 +23,8 @@ public class ArrayTaskList extends TaskList {
         if (arrayTask.length < realSize) {
             Task[] arrayTaskold = arrayTask;
             arrayTask = new Task[arrayTask.length * 2];
-            
-            for (int i = 0; i < (this.size() - 1); i++) {
-                arrayTask[i] = arrayTaskold[i];
-            }
+
+            System.arraycopy(arrayTaskold, 0, arrayTask, 0, arrayTaskold.length);
         }
         arrayTask[realSize - 1] = task;
     }
@@ -47,7 +45,7 @@ public class ArrayTaskList extends TaskList {
                 for (int j = 0; j < i; j++) {
                     arrayTask[j] = arrayTaskold[j];
                 }
-                
+
                 for (int j = i; j < arrayTask.length; j++) {
                     arrayTask[j] = arrayTaskold[j + 1];
                 }
