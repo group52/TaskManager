@@ -48,8 +48,9 @@ public class Handler {
         int code = XMLParse.getCodeFromXML(s);
         String status = XMLParse.getStatusFromXML(s);
         String action = XMLParse.getActionFromXML(s);
-        if (code == 400 || code == 401 || code == 404 || code == 405 || code == 415 || code == 500)
-            throw new ServerException(status);
+        if (code == 400 || code == 401 || code == 404 || code == 405 || code == 415 || code == 500) {
+            if (!"view".equals(action)) throw new ServerException(status);
+        }
         else if (code == 200 || code == 202) {
             if ("user".equals(action)) mainPanel.displayMessage(status);
         }
@@ -62,13 +63,12 @@ public class Handler {
      *
      * @throws JAXBException if JAXB parser has a problem
      */
-    private void updateTaskList() throws JAXBException {
+    private void updateTaskList() throws JAXBException, IOException {
         serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("view"));
-        String s = serverDialog.getResponseFromServer();
+        String s = getResponseFromServer();
         if (s != null) {
             if ((XMLParse.getActionFromXML(s).equals("view")))
                 mainPanel.showTaskList(XMLParse.getTasksFromXML((s)));
-
             serverDialog.sendXMLToServer(XMLParse.parseRequestToXML("notification"));
             s = serverDialog.getResponseFromServer();
             if (XMLParse.getActionFromXML(s).equals("notification")) ;
