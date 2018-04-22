@@ -838,10 +838,10 @@ public class XMLParse {
      @param code is the answer code to the client
      @param status is the answer to client
      @return file is the answer file for status after some action from client */
-    public String sendStatus(Client client, int code, String status) {
+    public String sendStatus(Client client, int code, String status, String action) {
 
         XMLParse.ServerClient serverClient = new XMLParse.ServerClient(client.getLogin(),client.getPassword(),client.getId());
-        XMLParse.Socket socket = new XMLParse.Socket(serverClient, "", code, status);
+        XMLParse.Socket socket = new XMLParse.Socket(serverClient, action, code, status);
         return outParse(socket);
     }
 

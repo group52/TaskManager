@@ -118,7 +118,8 @@ public class Server extends Thread {
 
         Model model = new Model();
         String sendAnswer;
-        char status = getCommandType(s).charAt(0);
+        String action = getCommandType(s);
+        char status = action.charAt(0);
         Client client = model.getClient(s);
 
         switch (status) {
@@ -128,7 +129,7 @@ public class Server extends Thread {
                     sendAnswer = model.sendId(client);
                 }
                 else
-                    sendAnswer = model.sendStatus(client, 415, "Already exist");
+                    sendAnswer = model.sendStatus(client, 415, "Already exist", action);
                 break;
             case 'u': // "user"
                 if (model.getAvtorization(client)) {
@@ -137,7 +138,7 @@ public class Server extends Thread {
                     model.changeClient(clientUser);
                     sendAnswer = model.sendId(clientUser);
                 } else
-                    sendAnswer = model.sendStatus(client,404, "Not Found");
+                    sendAnswer = model.sendStatus(client,404, "Not Found", action);
                 break;
             case 'n': // "notification"
                 if (model.checkAvtorization(client)) {
@@ -145,7 +146,7 @@ public class Server extends Thread {
                     sendAnswer = model.sendTasksByTime(clientNotification);
                 }
                 else
-                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized", action);
                 break;
             case 'v': // "view"
                 if (model.checkAvtorization(client)) {
@@ -153,21 +154,21 @@ public class Server extends Thread {
                     if (clientView.getArrayList().size() > 0)
                         sendAnswer = model.sendTasks(clientView);
                     else
-                        sendAnswer = model.sendStatus(client,404, "Not Found");
+                        sendAnswer = model.sendStatus(client,404, "Not Found", action);
                 }
                 else
-                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized", action);
                 break;
             case 'a': // "add"
                 if (model.checkAvtorization(client)) {
                     Client clientAdd = model.getClientFromFile(client);
                     if (model.workAdd(clientAdd, model.getAddTask(s)))
-                        sendAnswer = model.sendStatus(clientAdd, 201, "Created");
+                        sendAnswer = model.sendStatus(clientAdd, 201, "Created", action);
                     else
-                        sendAnswer = model.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = model.sendStatus(client, 400, "Bad Request", action);
                 }
                 else
-                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized", action);
                 break;
             case 'e': // "edit"
                 if (model.checkAvtorization(client)) {
@@ -177,34 +178,34 @@ public class Server extends Thread {
                     ArrayTaskList tasks = model.getAddTask(s);
                     tasks.remove(task);
                     if (model.workAdd(clientEdit, tasks))
-                        sendAnswer = model.sendStatus(clientEdit, 202, "Accepted");
+                        sendAnswer = model.sendStatus(clientEdit, 202, "Accepted", action);
                     else
-                        sendAnswer = model.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = model.sendStatus(client, 400, "Bad Request", action);
                 } else
-                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized", action);
                 break;
             case 'd': // "delete"
                 if (model.checkAvtorization(client)) {
                     Client clientDelete = model.getClientFromFile(client);
                     if (model.workDelete(clientDelete, model.getDeleteTask(s)))
-                        sendAnswer = model.sendStatus(clientDelete, 202, "Accepted");
+                        sendAnswer = model.sendStatus(clientDelete, 202, "Accepted", action);
                     else
-                        sendAnswer = model.sendStatus(client, 400, "Bad Request");
+                        sendAnswer = model.sendStatus(client, 400, "Bad Request", action);
                 } else
-                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized", action);
                 break;
             case 'c': // "close"
                 if (model.checkAvtorization(client)) {
                     client.setId((int) System.currentTimeMillis());
                     if (model.newSessionClient(client))
-                        sendAnswer = model.sendStatus(client,200, "OK");
+                        sendAnswer = model.sendStatus(client,200, "OK", action);
                     else
-                        sendAnswer = model.sendStatus(client,400, "Bad Request");
+                        sendAnswer = model.sendStatus(client,400, "Bad Request", action);
                 } else
-                    sendAnswer = model.sendStatus(client,401, "Unauthorized");
+                    sendAnswer = model.sendStatus(client,401, "Unauthorized", action);
                 break;
             default:
-                sendAnswer = model.sendStatus(client,405, "Method Not Allowed");
+                sendAnswer = model.sendStatus(client,405, "Method Not Allowed", action);
                 break;
         }
         return sendAnswer;

@@ -100,8 +100,8 @@ public class Model {
      @param code is the answer code to the client
      @param status is the answer to client
      @return file is the answer file for status after some action from client */
-    public String sendStatus(Client client, int code, String status) {
-        return xmlParse.sendStatus(client, code, status);
+    public String sendStatus(Client client, int code, String status, String action) {
+        return xmlParse.sendStatus(client, code, status, action);
     }
 
     /** Marshaling the answer file for "notification" action from client
