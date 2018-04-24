@@ -33,26 +33,25 @@ public class ArrayTaskList extends TaskList {
     @return true if find the task for removing 
     @throw NullPointerException means task is null */
     public boolean remove(Task task) {
-        if (task == null)
-            throw new NullPointerException("Task can't be null");
-    
-        for (int i = 0; i < arrayTask.length; i++) {
-            if (arrayTask[i].equals(task)) {
-                Task[] arrayTaskold = arrayTask;
-                arrayTask = new Task[arrayTask.length - 1];
-                
-                for (int j = 0; j < i; j++) {
-                    arrayTask[j] = arrayTaskold[j];
-                }
+            if (task == null)
+                throw new NullPointerException("Task can't be null");
 
-                for (int j = i; j < arrayTask.length; j++) {
-                    arrayTask[j] = arrayTaskold[j + 1];
+            for (int i = 0; i < arrayTask.length; i++) {
+                if (arrayTask[i].equals(task)) {
+                    Task[] arrayTaskold = arrayTask;
+                    arrayTask = new Task[arrayTask.length - 1];
+
+                        System.arraycopy(arrayTaskold, 0, arrayTask, 0, i);
+
+                       if (arrayTask.length != i) {
+                           System.arraycopy(arrayTaskold, i + 1, arrayTask, i, arrayTask.length - 1 - i);
+                       }
+
+                    realSize --;
+                    return true;
                 }
-                realSize --;
-                return true;
-            }    
-        }
-        return false;
+            }
+            return false;
     }
 
     /** Return size of the TaskList
